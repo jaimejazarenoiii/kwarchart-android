@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_line">
+
+    <fragment
+        android:id="@+id/navigation_line"
+        android:name="com.kwarchart.sample.ui.line.LineFragment"
+        android:label="@string/title_line"
+        tools:layout="@layout/fragment_line" />
+
+    <fragment
+        android:id="@+id/navigation_bar"
+        android:name="com.kwarchart.sample.ui.bar.BarFragment"
+        android:label="@string/title_bar"
+        tools:layout="@layout/fragment_bar" />
+
+    <fragment
+        android:id="@+id/navigation_pie"
+        android:name="com.kwarchart.sample.ui.pie.PieFragment"
+        android:label="@string/title_pie"
+        tools:layout="@layout/fragment_pie" />
+</navigation>

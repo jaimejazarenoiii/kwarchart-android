@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sample</string>
+    <string name="title_line">Line</string>
+    <string name="title_bar">Bar</string>
+    <string name="title_pie">Pie</string>
+    <string name="add">Add</string>
+</resources>
