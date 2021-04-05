@@ -33,37 +33,13 @@ fun Chart(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier = modifier) {
-        if (
-            legend != null &&
-            (legend.position == LegendPosition.TOP_LEFT ||
-            legend.position == LegendPosition.TOP ||
-            legend.position == LegendPosition.TOP_RIGHT)
-        ) {
-            HorizontalLegends(
-                modifier = Modifier
-                    .align(
-                        if (legend.position == LegendPosition.TOP_LEFT)
-                            Alignment.Start
-                        else if (legend.position == LegendPosition.TOP_LEFT)
-                            Alignment.CenterHorizontally
-                        else
-                            Alignment.End
-                    )
-                    .padding(10.dp),
-                legend = legend
-            )
-        }
+        if (legend != null) TopLegends(legend)
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().weight(2f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (legend != null && legend.position == LegendPosition.LEFT) {
-                VerticalLegends(
-                    modifier = Modifier.padding(10.dp),
-                    legend = legend
-                )
-            }
+            if (legend != null) LeftLegends(legend)
 
             yAxisName?.let {
                 Text(
@@ -87,34 +63,96 @@ fun Chart(
                 }
             }
 
-            if (legend != null && legend.position == LegendPosition.RIGHT) {
-                VerticalLegends(
-                    modifier = Modifier.padding(10.dp),
-                    legend = legend
-                )
-            }
+            if (legend != null) RightLegends(legend)
         }
 
-        if (
-            legend != null &&
-            (legend.position == LegendPosition.BOTTOM_LEFT ||
-            legend.position == LegendPosition.BOTTOM ||
-            legend.position == LegendPosition.BOTTOM_RIGHT)
-        ) {
-            HorizontalLegends(
-                modifier = Modifier
-                    .align(
-                        if (legend.position == LegendPosition.BOTTOM_LEFT)
-                            Alignment.Start
-                        else if (legend.position == LegendPosition.BOTTOM)
-                            Alignment.CenterHorizontally
-                        else
-                            Alignment.End
-                    )
-                    .padding(10.dp),
-                legend = legend
-            )
-        }
+        if (legend != null) BottomLegends(legend)
+    }
+}
+
+/**
+ * Plot legends at the top of the chart.
+ *
+ * @param legend Legend to be plotted.
+ */
+@Composable
+private fun ColumnScope.TopLegends(legend: Legend) {
+    if (
+        legend.position == LegendPosition.TOP_LEFT ||
+        legend.position == LegendPosition.TOP ||
+        legend.position == LegendPosition.TOP_RIGHT
+    ) {
+        HorizontalLegends(
+            modifier = Modifier
+                .align(
+                    if (legend.position == LegendPosition.TOP_LEFT)
+                        Alignment.Start
+                    else if (legend.position == LegendPosition.TOP)
+                        Alignment.CenterHorizontally
+                    else
+                        Alignment.End
+                )
+                .padding(10.dp),
+            legend = legend
+        )
+    }
+}
+
+/**
+ * Plot legends at the left of the chart.
+ *
+ * @param legend Legend to be plotted.
+ */
+@Composable
+private fun LeftLegends(legend: Legend) {
+    if (legend.position == LegendPosition.LEFT) {
+        VerticalLegends(
+            modifier = Modifier.padding(10.dp),
+            legend = legend
+        )
+    }
+}
+
+/**
+ * Plot legends at the right of the chart.
+ *
+ * @param legend Legend to be plotted.
+ */
+@Composable
+private fun RightLegends(legend: Legend) {
+    if (legend.position == LegendPosition.RIGHT) {
+        VerticalLegends(
+            modifier = Modifier.padding(10.dp),
+            legend = legend
+        )
+    }
+}
+
+/**
+ * Plot legends at the bottom of the chart.
+ *
+ * @param legend Legend to be plotted.
+ */
+@Composable
+private fun ColumnScope.BottomLegends(legend: Legend) {
+    if (
+        legend.position == LegendPosition.BOTTOM_LEFT ||
+        legend.position == LegendPosition.BOTTOM ||
+        legend.position == LegendPosition.BOTTOM_RIGHT
+    ) {
+        HorizontalLegends(
+            modifier = Modifier
+                .align(
+                    if (legend.position == LegendPosition.BOTTOM_LEFT)
+                        Alignment.Start
+                    else if (legend.position == LegendPosition.BOTTOM)
+                        Alignment.CenterHorizontally
+                    else
+                        Alignment.End
+                )
+                .padding(10.dp),
+            legend = legend
+        )
     }
 }
 

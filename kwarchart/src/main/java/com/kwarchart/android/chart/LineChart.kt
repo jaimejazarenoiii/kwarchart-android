@@ -1,5 +1,7 @@
 package com.kwarchart.android.chart
 
+import android.graphics.Paint
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -7,13 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.Chart
-import com.kwarchart.android.ChartCanvas
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.enum.LineChartType
 import com.kwarchart.android.model.ChartData
@@ -21,9 +23,12 @@ import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.LineSeries
 import com.kwarchart.android.util.PathUtils
 
+const val AXIS_VALUES_FONT_SIZE = 32f
+
 private var mHGap = 0f
 private var mVGap = 0f
 private var mMaxVal = 0f
+private var mMaxLen = 0
 
 /**
  * Line chart.
@@ -50,6 +55,24 @@ fun <T> LineChart(
     showGrid: Boolean = true,
     legendPos: LegendPosition? = null
 ) {
+    val keys = mutableListOf<T>()
+
+    data.forEach {
+        if (mMaxLen < it.data.size) {
+            mMaxLen = it.data.size
+        }
+
+        it.data.forEach { chartData ->
+            if (mMaxVal < chartData.value) {
+                mMaxVal = chartData.value
+            }
+
+            if (!keys.contains(chartData.key)) {
+                keys.add(chartData.key)
+            }
+        }
+    }
+
     Chart(
         modifier = modifier,
         xAxisName = xAxisName,
@@ -63,70 +86,62 @@ fun <T> LineChart(
             tmpLegend
         }
     ) {
-        ChartCanvas(
-            modifier = Modifier
-                .fillMaxWidth()
+        Canvas(
+            modifier = modifier
                 .weight(5f)
-                .padding(10.dp)
+                .padding(
+                    start = (mMaxVal.toString().length * 8).dp,
+                    top = 10.dp,
+                    end = 10.dp,
+                    bottom = AXIS_VALUES_FONT_SIZE.dp
+                )
         ) {
-            var maxSize = 0
-
-            data.forEach {
-                if (maxSize < it.data.size) {
-                    maxSize = it.data.size
-                }
-
-                mHGap = size.width / maxSize
-                mVGap = size.height / maxSize
-
-                it.data.forEach { chartData ->
-                    if (mMaxVal < chartData.value) {
-                        mMaxVal = chartData.value
-                    }
-                }
-            }
-
+            mHGap = size.width / mMaxLen
+            mVGap = size.height / mMaxLen
 
             if (showGrid) {
-                drawGrids(this, maxSize, gridsColor)
+                drawGrids(mMaxLen, gridsColor)
             }
             if (showAxes) {
-                drawAxes(this, axesColor)
+                drawAxes(axesColor, keys)
             }
             data.forEach {
-                drawData(this, it)
+                drawData(it)
             }
         }
     }
 }
 
 /**
+ * Canvas' origin point.
+ *
+ * @return Offset point.
+ */
+private fun DrawScope.origin() = Offset(0f, size.height)
+
+/**
  * Draw line chart grids.
  *
- * @param drawScope Canvas' DrawScope.
  * @param count Grid count.
  * @param color Grid color.
  */
-private fun drawGrids(
-    drawScope: DrawScope,
-    count: Int,
-    color: Color
-) {
+private fun DrawScope.drawGrids(count: Int, color: Color) {
+    val startPoint = origin()
 //    val pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f))
 
     for (i in 1..count) {
         // Horizontal lines
-        drawScope.drawLine(
+        drawLine(
             color = color,
-            start = Offset(0f, i * mVGap),
-            end = Offset(drawScope.size.width, i * mVGap),
+            start = Offset(0f, startPoint.y - i * mVGap),
+            end = Offset(size.width, startPoint.y - i * mVGap),
 //            pathEffect = pathEffect
         )
         // Vertical lines
-        drawScope.drawLine(
+        drawLine(
             color = color,
             start = Offset(i * mHGap, 0f),
-            end = Offset(i * mHGap, drawScope.size.height),
+            end = Offset(i * mHGap, size.height),
 //            pathEffect = pathEffect
         )
     }
@@ -135,39 +150,80 @@ private fun drawGrids(
 /**
  * Draw X and Y axes.
  *
- * @param drawScope Canvas' DrawScope.
  * @param color Axes color.
+ * @param keys Keys to be plotted in the X-axis.
  */
-private fun drawAxes(drawScope: DrawScope, color: Color) {
+private fun <T> DrawScope.drawAxes(
+    color: Color,
+    keys: List<T>
+) {
+    val startPoint = origin()
+
     // X-axis
-    drawScope.drawLine(
+    drawLine(
         color = color,
-        start = Offset(0f, 0f),
-        end = Offset(drawScope.size.width, 0f)
+        start = startPoint,
+        end = Offset(size.width, startPoint.y)
     )
     // Y-axis
-    drawScope.drawLine(
+    drawLine(
         color = color,
-        start = Offset(0f, 0f),
-        end = Offset(0f, drawScope.size.height)
+        start = startPoint,
+        end = Offset(0f, 0f)
     )
+
+    drawIntoCanvas {
+        val valuePerGrid = mMaxVal / mMaxLen
+
+        val valTextPaint = Paint()
+        valTextPaint.textAlign = Paint.Align.RIGHT
+        valTextPaint.textSize = AXIS_VALUES_FONT_SIZE
+        valTextPaint.color = 0xff000000.toInt()
+
+        val keyTextPaint = Paint()
+        keyTextPaint.textAlign = Paint.Align.CENTER
+        keyTextPaint.textSize = AXIS_VALUES_FONT_SIZE
+        keyTextPaint.color = 0xff000000.toInt()
+
+        keys.forEachIndexed { i, key ->
+            val valOffset = Offset(
+                -20f,
+                (startPoint.y - (i + 1) * mVGap) + AXIS_VALUES_FONT_SIZE / 2
+            )
+            val keyOffset = Offset(
+                (i + 1) * mHGap,
+                startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
+            )
+
+            it.nativeCanvas.drawText(
+                (valuePerGrid * (i + 1)).toInt().toString(),
+                valOffset.x,
+                valOffset.y,
+                valTextPaint
+            )
+            it.nativeCanvas.drawText(
+                key.toString(),
+                keyOffset.x,
+                keyOffset.y,
+                keyTextPaint
+            )
+        }
+    }
 }
 
 /**
  * Plot line chart data.
  *
- * @param drawScope Canvas' DrawScope.
  * @param lineSeries Data to be plotted in this chart.
  */
-private fun <T> drawData(
-    drawScope: DrawScope,
-    lineSeries: LineSeries<T>
-) {
+private fun <T> DrawScope.drawData(lineSeries: LineSeries<T>) {
     val path = Path()
-    var leftPoint = Offset(0f, 0f)
+    var leftPoint = origin()
+
+    path.moveTo(leftPoint.x, leftPoint.y)
 
     lineSeries.data.forEachIndexed { i, chartData ->
-        val p = getDataPoint(i, chartData, drawScope.size.height)
+        val p = getDataPoint(i, chartData, size.height)
 
         if (lineSeries.type == LineChartType.NORMAL) {
             path.lineTo(p.x, p.y)
@@ -178,7 +234,7 @@ private fun <T> drawData(
         val rightPoint = getDataPoint(
             i + 1,
             lineSeries.data[rightPointIndex],
-            drawScope.size.height
+            size.height
         )
         val controlPoints = PathUtils.calculateControlPoints(
             leftPoint, p, rightPoint, i == 0
@@ -192,7 +248,7 @@ private fun <T> drawData(
         leftPoint = p
     }
 
-    drawScope.drawPath(
+    drawPath(
         path = path,
         color = lineSeries.color,
         style = Stroke(lineSeries.width.toFloat())
@@ -200,10 +256,10 @@ private fun <T> drawData(
 
     if (lineSeries.showDataPoint) {
         lineSeries.data.forEachIndexed { i, chartData ->
-            drawScope.drawCircle(
+            drawCircle(
                 color = lineSeries.dataPointColor,
                 radius = 10f,
-                center = getDataPoint(i, chartData, drawScope.size.height)
+                center = getDataPoint(i, chartData, size.height)
             )
         }
     }
@@ -224,7 +280,7 @@ private fun <T> getDataPoint(
     canvasHeight: Float
 ) = Offset(
     (index + 1) * mHGap,
-    (data.value / mMaxVal) * canvasHeight
+    canvasHeight - ((data.value / mMaxVal) * canvasHeight)
 )
 
 
