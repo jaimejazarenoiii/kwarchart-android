@@ -53,6 +53,8 @@ class LineFragment : Fragment() {
                             lineViewModel.spentSeries.value!!,
                             lineViewModel.goalSeries
                         ),
+                        yAxisName = "Spent",
+                        xAxisName = "Day",
                         legendPos = LegendPosition.TOP_RIGHT
                     )
                 }
