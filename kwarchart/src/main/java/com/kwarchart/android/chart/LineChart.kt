@@ -21,6 +21,7 @@ import com.kwarchart.android.enum.LineChartType
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.LineSeries
+import com.kwarchart.android.util.ChartUtils
 import com.kwarchart.android.util.PathUtils
 
 private const val WEIGHT_LINE_CHART_CANVAS = 5f
@@ -186,7 +187,7 @@ private fun <T> DrawScope.drawAxes(
         keyTextPaint.textSize = AXIS_VALUES_FONT_SIZE
         keyTextPaint.color = 0xff000000.toInt()
 
-        keys.forEachIndexed { i, key ->
+        ChartUtils.getAxisValues(mMaxVal, mMaxLen).forEachIndexed { i, value ->
             val valOffset = Offset(
                 -20f,
                 (startPoint.y - (i + 1) * mVGap) + AXIS_VALUES_FONT_SIZE / 2
@@ -197,13 +198,13 @@ private fun <T> DrawScope.drawAxes(
             )
 
             it.nativeCanvas.drawText(
-                (valuePerGrid * (i + 1)).toInt().toString(),
+                value.toInt().toString(),
                 valOffset.x,
                 valOffset.y,
                 valTextPaint
             )
             it.nativeCanvas.drawText(
-                key.toString(),
+                keys[i].toString(),
                 keyOffset.x,
                 keyOffset.y,
                 keyTextPaint

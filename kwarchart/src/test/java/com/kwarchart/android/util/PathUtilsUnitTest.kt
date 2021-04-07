@@ -27,20 +27,20 @@ class PathUtilsUnitTest {
             isFirstPoint = false
         )
 
-        assertEquals(cp1.x1, 0.0f)
-        assertEquals(cp1.y1, 601.0f)
-        assertEquals(cp1.x2, 94.2f)
-        assertEquals(cp1.y2, 602.8781f)
+        assertEquals(0.0f, cp1.x1)
+        assertEquals(601.0f, cp1.y1)
+        assertEquals(94.2f, cp1.x2)
+        assertEquals(602.8781f, cp1.y2)
 
-        assertEquals(cp2.x1, 174.94286f)
-        assertEquals(cp2.y1, 523.9969f)
-        assertEquals(cp2.x2, 228.77142f)
-        assertEquals(cp2.y2, 360.6f)
+        assertEquals(174.94286f, cp2.x1)
+        assertEquals(523.9969f, cp2.y1)
+        assertEquals(228.77142f, cp2.x2)
+        assertEquals(360.6f, cp2.y2)
 
-        assertEquals(cp3.x1, 309.51428f)
-        assertEquals(cp3.y1, 315.525f)
-        assertEquals(cp3.x2, 363.34286f)
-        assertEquals(cp3.y2, 396.28436f)
+        assertEquals(309.51428f, cp3.x1)
+        assertEquals(315.525f, cp3.y1)
+        assertEquals(363.34286f, cp3.x2)
+        assertEquals(396.28436f, cp3.y2)
     }
 
 }

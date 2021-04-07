@@ -14,7 +14,7 @@ import com.kwarchart.android.model.LineSeries
 import org.junit.Rule
 import org.junit.Test
 
-class LineChartTest {
+class LineChartInstrumentedTest {
 
     private val mOneLineSeries = arrayListOf(
         LineSeries(
