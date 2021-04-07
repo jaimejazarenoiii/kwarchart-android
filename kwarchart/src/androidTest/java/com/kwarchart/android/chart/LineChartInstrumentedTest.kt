@@ -59,9 +59,10 @@ class LineChartInstrumentedTest {
             LineChart(
                 modifier = Modifier
                     .width(300.dp)
-                    .height(300.dp)
-                    .background(color = Color.White),
+                    .height(300.dp),
                 data = mOneLineSeries,
+                yAxisName = "Spent",
+                xAxisName = "Day"
             )
         }
 
@@ -69,6 +70,27 @@ class LineChartInstrumentedTest {
         composeTestRule.onRoot().assertWidthIsEqualTo(300.dp)
         // Height test
         composeTestRule.onRoot().assertHeightIsEqualTo(300.dp)
+        // Y-axis name test
+        composeTestRule.onNodeWithText("Spent").assertIsDisplayed()
+        // X-axis name test
+        composeTestRule.onNodeWithText("Day").assertIsDisplayed()
+    }
+
+    @Test
+    fun lineSeriesNoAxesNamesTest() {
+        composeTestRule.setContent {
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneLineSeries
+            )
+        }
+
+        // Y-axis name test
+        composeTestRule.onNodeWithText("Spent").assertDoesNotExist()
+        // X-axis name test
+        composeTestRule.onNodeWithText("Day").assertDoesNotExist()
     }
 
     @Test
@@ -77,8 +99,7 @@ class LineChartInstrumentedTest {
             LineChart(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .background(color = Color.White),
+                    .height(300.dp),
                 data = mOneLineSeries,
                 legendPos = LegendPosition.TOP_RIGHT
             )
@@ -93,8 +114,7 @@ class LineChartInstrumentedTest {
             LineChart(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .background(color = Color.White),
+                    .height(300.dp),
                 data = mOneLineSeries,
             )
         }
@@ -108,8 +128,7 @@ class LineChartInstrumentedTest {
             LineChart(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .background(color = Color.White),
+                    .height(300.dp),
                 data = mTwoLineSeries,
                 legendPos = LegendPosition.TOP_RIGHT
             )
@@ -125,8 +144,7 @@ class LineChartInstrumentedTest {
             LineChart(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .background(color = Color.White),
+                    .height(300.dp),
                 data = mTwoLineSeries,
             )
         }
