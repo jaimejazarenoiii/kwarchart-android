@@ -15,6 +15,9 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.Legend
 
+private const val WEIGHT_CANVAS_AREA = 2f
+private const val WEIGHT_X_AXIS_NAME = 1f
+
 /**
  * Chart template.
  *
@@ -36,7 +39,7 @@ fun Chart(
         if (legend != null) TopLegends(legend)
 
         Row(
-            modifier = Modifier.fillMaxWidth().weight(2f),
+            modifier = Modifier.fillMaxWidth().weight(WEIGHT_CANVAS_AREA),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (legend != null) LeftLegends(legend)
@@ -49,7 +52,7 @@ fun Chart(
             }
 
             Column(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(WEIGHT_CANVAS_AREA),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
@@ -57,7 +60,7 @@ fun Chart(
                     Text(
                         text = it,
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(WEIGHT_X_AXIS_NAME)
                             .padding(bottom = 10.dp)
                     )
                 }

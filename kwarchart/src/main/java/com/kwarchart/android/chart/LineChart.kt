@@ -23,7 +23,8 @@ import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.LineSeries
 import com.kwarchart.android.util.PathUtils
 
-const val AXIS_VALUES_FONT_SIZE = 32f
+private const val WEIGHT_LINE_CHART_CANVAS = 5f
+private const val AXIS_VALUES_FONT_SIZE = 32f
 
 private var mHGap = 0f
 private var mVGap = 0f
@@ -88,7 +89,7 @@ fun <T> LineChart(
     ) {
         Canvas(
             modifier = modifier
-                .weight(5f)
+                .weight(WEIGHT_LINE_CHART_CANVAS)
                 .padding(
                     start = (mMaxVal.toString().length * 8).dp,
                     top = 10.dp,
