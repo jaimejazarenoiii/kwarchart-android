@@ -23,6 +23,7 @@ import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.Legend
 
+private const val AXIS_VALUES_FONT_SIZE = 32f
 
 private var mHGap = 0f
 private var mVGap = 0f
