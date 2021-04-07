@@ -1,10 +1,8 @@
 package com.kwarchart.android.chart
 
 import android.graphics.Paint
-import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,28 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.Chart
-import com.kwarchart.android.ChartCanvas
 import com.kwarchart.android.enum.LegendPosition
-import com.kwarchart.android.enum.LineChartType
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.Legend
-import com.kwarchart.android.model.LineSeries
-import com.kwarchart.android.util.PathUtils
-import android.graphics.PorterDuff
-
-import android.graphics.PorterDuffColorFilter
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.painter.ColorPainter
-
-import com.kwarchart.android.*
-import com.kwarchart.android.*
 
 
 private var mHGap = 0f
