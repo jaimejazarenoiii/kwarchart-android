@@ -33,6 +33,7 @@ jobs:
     name: Running Unit Tests
     needs: build
 
+    steps:
     - name: Unit Test
         run: ./gradlew testDebugUnitTest
 
