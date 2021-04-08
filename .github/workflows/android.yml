@@ -1,4 +1,4 @@
-name: Android CI
+name: KwarChart CI/CD
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-
+    name: Building PR
     runs-on: ubuntu-latest
 
     steps:
@@ -28,3 +28,11 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew build
+
+  test:
+    name: Running Unit Tests
+    needs: build
+
+    - name: Unit Test
+        run: ./gradlew testDebugUnitTest
+
