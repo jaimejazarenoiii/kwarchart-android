@@ -9,14 +9,12 @@ on:
 jobs:
   build_test:
     name: Building and testing
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
-    # Checks out a repository copy on the "runs-on" machine
     - name: Checkout code
       uses: actions/checkout@v2
     
-    # Setup JDK
     - name: Set up JDK 8
       uses: actions/setup-java@v2
       with:
@@ -37,4 +35,4 @@ jobs:
       with:
         api-level: 29
         arch: x86_64
-        script: ./gradlew connectedCheck
+        script: ./gradlew kwarchart:connectedAndroidTest
