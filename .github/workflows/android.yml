@@ -32,6 +32,7 @@ jobs:
   test:
     name: Running Unit Tests
     needs: build
+    runs-on: ubuntu-latest
 
     steps:
     - name: Unit Test
