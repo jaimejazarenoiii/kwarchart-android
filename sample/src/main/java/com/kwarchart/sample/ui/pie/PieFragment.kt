@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.PieChart
+import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.sample.databinding.FragmentPieBinding
 
 class PieFragment : Fragment() {
@@ -35,6 +37,11 @@ class PieFragment : Fragment() {
 
         val root: View = binding.root
 
+        val add: Button = binding.add
+        add.setOnClickListener {
+            pieViewModel.add()
+        }
+
         val pieChart: ComposeView = binding.chartPie
         pieViewModel.chartData.observe(viewLifecycleOwner, Observer {
             pieChart.apply {
@@ -44,9 +51,9 @@ class PieFragment : Fragment() {
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .background(color = Color.White),
-                        legendX = "Date",
-                        legendY = "Savings",
-                        chartData = it
+                        data = it,
+                        title = "This month's transactions",
+                        legendPos = LegendPosition.RIGHT
                     )
                 }
             }

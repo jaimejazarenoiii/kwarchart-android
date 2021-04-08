@@ -1,113 +1,136 @@
 package com.kwarchart.android.chart
 
 import android.graphics.Paint
-import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.Chart
 import com.kwarchart.android.ChartCanvas
+import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.android.enum.PieChartType
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
+import com.kwarchart.android.model.PieSeries
+import com.kwarchart.android.util.ChartUtils
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.random.Random
 
-private var mTotalVal = 0f
+private lateinit var mEndAngles: ArrayList<Float>
 
 /**
+ * Pie chart.
  *
- * @param modifier
+ * @param modifier Modifier.
+ * @param data List of LineSeries which will be plotted in this chart.
+ * @param type
+ * @param title
+ * @param legendPos Legend position.
  */
 @Composable
 fun <T> PieChart(
-    modifier: Modifier,
-    legendX: String,
-    legendY: String,
-    chartData: List<ChartData<T>>,
+    modifier: Modifier = Modifier,
+    data: List<PieSeries<T>>,
+    type: PieChartType = PieChartType.NORMAL,
+    title: String? = null,
+    legendPos: LegendPosition? = null
 ) {
-    mTotalVal = 0f
+    mEndAngles = ChartUtils.getEndAngles(data.map { it.data.value }.toFloatArray())
 
     Chart(
         modifier = modifier,
-        xAxisName = legendX,
-        yAxisName = legendY
+        title = title,
+        legend = legendPos?.let { _ ->
+            val tmpLegend = Legend(legendPos)
+            data.forEach {
+                tmpLegend.legends.add(it.legend)
+                tmpLegend.colors.add(it.color)
+            }
+            tmpLegend
+        }
     ) {
         ChartCanvas(modifier = modifier.padding(10.dp)) {
-            val size = chartData.size - 1
-            chartData.forEach {
-                mTotalVal += it.value
-            }
-            val textPaint = Paint()
-            textPaint.textAlign = Paint.Align.CENTER
-            textPaint.textSize = 64f
-            textPaint.color = 0xffffffff.toInt()
+            drawArcs(data)
+//            drawArcValues(data)
+        }
+    }
+}
 
-            var startAngle = 0f
+/**
+ * Draw pie chart arcs.
+ *
+ * @param data Data to be plotted in this chart.
+ */
+private fun <T> DrawScope.drawArcs(data: List<PieSeries<T>>) {
+    var startAngle = 0f
 
-            for (i in 0..size) {
-                val endAngle = (chartData[i].value / mTotalVal) * 360f
+    for (i in data.indices) {
+        val endAngle = mEndAngles[i]
 
-                drawArc(
-                    startAngle = -startAngle,
-                    sweepAngle = -endAngle,
-                    color = Color(
-                        Random.nextInt(255),
-                        Random.nextInt(255),
-                        Random.nextInt(255),
-                    ),
-                    useCenter = true
-                )
+        drawArc(
+            startAngle = -startAngle,
+            sweepAngle = -endAngle,
+            color = data[i].color,
+            useCenter = true
+        )
 
-                startAngle += endAngle
-            }
+        startAngle += endAngle
+    }
+}
 
-            drawIntoCanvas {
-                val origin = Offset(
-                    this.size.width / 2f,
-                    this.size.height / 2f
-                )
-                val majorAxis = this.size.width / 2f
-                val minorAxis = this.size.height / 2f
-                var startXY = Offset(majorAxis * 2f, -minorAxis)
-                startAngle = 0f
+/**
+ * Draw pie chart arcs' values.
+ *
+ * @param data Data to be plotted in this chart.
+ */
+private fun <T> DrawScope.drawArcValues(data: List<PieSeries<T>>) {
+    var startAngle = 0f
 
-                for (i in 0..size) {
-                    val endAngle = (chartData[i].value / mTotalVal) * (PI.toFloat() * 2f)
+    val textPaint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        textSize = 64f
+        color = 0xffffffff.toInt()
+    }
+    val origin = Offset(
+        this.size.width / 2f,
+        this.size.height / 2f
+    )
+    val majorAxis = this.size.width / 2f
+    val minorAxis = this.size.height / 2f
+    var startXY = Offset(majorAxis * 2f, -minorAxis)
 
-                    if (i == 0) {
-                        it.nativeCanvas.scale(1f, -1f)
-                    }
+    drawIntoCanvas {
+        it.nativeCanvas.scale(1f, -1f)
 
+        for (i in data.indices) {
+            val endAngle = mEndAngles[i] * PI.toFloat() /180
 
-                    val x = cos(endAngle) * majorAxis
-                    val y = -(sin(endAngle) * minorAxis)
+            val x = cos(endAngle) * majorAxis
+            val y = -(sin(endAngle) * minorAxis)
 
-                    Log.d("SHIT", "value = ${chartData[i].value}")
-                    Log.d("SHIT", "endAngle = $endAngle  :  x = $x  :  y = $y")
+            startXY = Offset(
+                majorAxis + ((startXY.x - majorAxis - x) / 2f),
+                -((minorAxis - (minorAxis + y)) / 2f)
+            )
 
+            it.nativeCanvas.drawText(
+                data[i].data.value.toString(),
+                startXY.x,
+                startXY.y,
+                textPaint
+            )
 
-                    startXY = Offset(
-                        majorAxis + ((startXY.x - majorAxis - x) / 2f),
-                        -((minorAxis - (minorAxis + y)) / 2f)
-                    )
-//                    if (i == 0)
-                    it.nativeCanvas.drawText(
-                        chartData[i].value.toString(),
-                        startXY.x,
-                        startXY.y,
-                        textPaint
-                    )
-
-                    startAngle += endAngle
-                }
-            }
+            startAngle += endAngle
         }
     }
 }
@@ -115,5 +138,34 @@ fun <T> PieChart(
 @Preview
 @Composable
 fun PieChartPreview() {
-//    PieChart()
+    PieChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        data = arrayListOf(
+            PieSeries(
+                data = ChartData("Bills", 1050f),
+                color = Color.Red,
+                legend = "Bills"
+            ),
+            PieSeries(
+                data = ChartData("Shopping", 500f),
+                color = Color.Green,
+                legend = "Shopping"
+            ),
+            PieSeries(
+                data = ChartData("Food", 2050f),
+                color = Color.Blue,
+                legend = "Food"
+            ),
+            PieSeries(
+                data = ChartData("Transportation", 800f),
+                color = Color.Yellow,
+                legend = "Transportation"
+            ),
+        ),
+        title = "This month's transactions",
+        legendPos = LegendPosition.RIGHT
+    )
 }

@@ -22,4 +22,26 @@ object ChartUtils {
         return res
     }
 
+    /**
+     * Get list of end angles in a circle.
+     *
+     * @param values Values to be fitted in a 360 angle.
+     */
+    fun getEndAngles(values: FloatArray) : ArrayList<Float> {
+        assert(values.isNotEmpty())
+
+        val res = arrayListOf<Float>()
+        var totalVal = 0f
+
+        values.forEach {
+            totalVal += it
+        }
+
+        values.forEach {
+            res.add((it / totalVal) * 360f)
+        }
+
+        return res
+    }
+
 }

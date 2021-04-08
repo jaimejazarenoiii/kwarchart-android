@@ -49,6 +49,7 @@ private var mMaxLen = 0
 fun <T> LineChart(
     modifier: Modifier = Modifier,
     data: List<LineSeries<T>>,
+    title: String? = null,
     xAxisName: String? = null,
     yAxisName: String? = null,
     axesColor: Color = Color.Gray,
@@ -77,6 +78,7 @@ fun <T> LineChart(
 
     Chart(
         modifier = modifier,
+        title = title,
         xAxisName = xAxisName,
         yAxisName = yAxisName,
         legend = legendPos?.let { _ ->

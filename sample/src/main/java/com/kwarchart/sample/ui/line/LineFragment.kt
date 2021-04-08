@@ -53,6 +53,7 @@ class LineFragment : Fragment() {
                             lineViewModel.spentSeries.value!!,
                             lineViewModel.goalSeries
                         ),
+                        title = "This week's transactions",
                         yAxisName = "Spent",
                         xAxisName = "Day",
                         legendPos = LegendPosition.TOP_RIGHT
