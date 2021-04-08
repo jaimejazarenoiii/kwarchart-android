@@ -60,7 +60,12 @@ fun <T> PieChart(
         }
     ) {
         ChartCanvas(modifier = modifier.padding(10.dp)) {
-            drawArcs(data)
+            if (type == PieChartType.NORMAL) {
+                drawArcs(data)
+            } else {
+                drawDoughnutArcs(data)
+            }
+
 //            drawArcValues(data)
         }
     }
@@ -72,6 +77,28 @@ fun <T> PieChart(
  * @param data Data to be plotted in this chart.
  */
 private fun <T> DrawScope.drawArcs(data: List<PieSeries<T>>) {
+    var startAngle = 0f
+
+    for (i in data.indices) {
+        val endAngle = mEndAngles[i]
+
+        drawArc(
+            startAngle = -startAngle,
+            sweepAngle = -endAngle,
+            color = data[i].color,
+            useCenter = true
+        )
+
+        startAngle += endAngle
+    }
+}
+
+/**
+ * Draw pie chart doughnut arcs.
+ *
+ * @param data Data to be plotted in this chart.
+ */
+private fun <T> DrawScope.drawDoughnutArcs(data: List<PieSeries<T>>) {
     var startAngle = 0f
 
     for (i in data.indices) {
@@ -101,10 +128,10 @@ private fun <T> DrawScope.drawArcValues(data: List<PieSeries<T>>) {
         textSize = 64f
         color = 0xffffffff.toInt()
     }
-    val origin = Offset(
-        this.size.width / 2f,
-        this.size.height / 2f
-    )
+//    val origin = Offset(
+//        this.size.width / 2f,
+//        this.size.height / 2f
+//    )
     val majorAxis = this.size.width / 2f
     val minorAxis = this.size.height / 2f
     var startXY = Offset(majorAxis * 2f, -minorAxis)

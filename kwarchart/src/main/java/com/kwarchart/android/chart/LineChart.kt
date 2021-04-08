@@ -177,8 +177,6 @@ private fun <T> DrawScope.drawAxes(
     )
 
     drawIntoCanvas {
-        val valuePerGrid = mMaxVal / mMaxLen
-
         val valTextPaint = Paint()
         valTextPaint.textAlign = Paint.Align.RIGHT
         valTextPaint.textSize = AXIS_VALUES_FONT_SIZE
