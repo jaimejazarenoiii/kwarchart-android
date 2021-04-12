@@ -29,7 +29,6 @@ class BarViewModel : ViewModel() {
                     ChartData(6, 500f),
                     ChartData(7, 600f)
             ),
-            type = BarChartType.NORMAL,
             legend = "Spent"
     )
 

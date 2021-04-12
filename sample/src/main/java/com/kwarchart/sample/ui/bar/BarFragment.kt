@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.Spinner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,10 +16,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.BarChart
+import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.sample.databinding.FragmentBarBinding
-
-
 
 
 class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -31,12 +29,12 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         barViewModel =
-            ViewModelProvider(this).get(BarViewModel::class.java)
+                ViewModelProvider(this).get(BarViewModel::class.java)
 
         _binding = FragmentBarBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -46,16 +44,17 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
             barViewModel.add()
         }
 
-        val spinner: Spinner = binding.spinner
-        val aa = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, barViewModel.spinnerData)
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinner.apply {
+            val aa = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, barViewModel.spinnerData)
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            onItemSelectedListener = this@BarFragment
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            adapter = aa
+        }
         val barChart: ComposeView = binding.chartBar
-        spinner.onItemSelectedListener = this
 
         // Set layout to use when the list of choices appear
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Set Adapter to Spinner
-        spinner.adapter = aa
         barViewModel.selectedSpinnerData.observe(viewLifecycleOwner, {
             barChart.apply {
                 setContent {
@@ -64,13 +63,14 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                                     .fillMaxWidth()
                                     .fillMaxHeight()
                                     .background(color = Color.White),
-                            data =  if (it == "0") {
+                            data = if (it == "0") {
                                 arrayListOf(barViewModel.spentSeries)
                             } else {
-                                arrayListOf(barViewModel.spentSeries, barViewModel.goalSeries)
+                                arrayListOf(barViewModel.goalSeries, barViewModel.spentSeries)
                             },
-                            legendPos = LegendPosition.TOP_RIGHT
-                    )
+                            legendPos = LegendPosition.TOP_RIGHT,
+                            type = BarChartType.VERTICAL_STACKED,
+                            )
                 }
             }
         })

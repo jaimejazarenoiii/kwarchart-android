@@ -11,13 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.Chart
+import com.kwarchart.android.enum.BarChartType
+import com.kwarchart.android.enum.BarChartType.*
+import com.kwarchart.android.enum.BarStyleType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
@@ -43,7 +44,8 @@ fun <T> BarChart(
         showAxes: Boolean = true,
         gridsColor: Color = Color.Gray,
         showGrid: Boolean = true,
-        legendPos: LegendPosition? = null
+        legendPos: LegendPosition? = null,
+        type : BarChartType = BarChartType.VERTICAL
 ) {
     val keys = mutableListOf<T>()
 
@@ -86,7 +88,7 @@ fun <T> BarChart(
                                 bottom = AXIS_VALUES_FONT_SIZE.dp
                         )
         ) {
-            mHGap = size.width / mMaxLen
+            mHGap = size.width / (mMaxLen + 0.5f)
             mVGap = size.height / mMaxLen
 
             if (showGrid) {
@@ -95,9 +97,10 @@ fun <T> BarChart(
             if (showAxes) {
                 drawAxes(axesColor, keys)
             }
-            data.forEach {
-                drawData(it)
+            data.forEachIndexed {index, element ->
+                drawData(element, index, data.size, type)
             }
+
         }
     }
 }
@@ -108,18 +111,46 @@ fun <T> BarChart(
  *
  * @param barSeries Data to be plotted in this chart.
  */
-private fun <T> DrawScope.drawData(barSeries: BarSeries<T>) {
+private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize: Int, barChartType: BarChartType) {
     barSeries.data.forEachIndexed { i, chartData ->
         val point = getDataPoint(i, chartData, size.height)
-        drawRect(
-                topLeft = Offset(point.x - 24, point.y),
-                size = Size(width = 48f, height = size.height - point.y),
-                color = barSeries.color,
-                style = Stroke(barSeries.width.toFloat()),
-//              brush = Brush.linearGradient(colors = listOf(barSeries.areaColor!!))
-        )
-    }
+        when (barChartType) {
+            VERTICAL -> {
+                if (totalSize < 2)
+                    drawRect(
+                            topLeft = Offset(point.x - 24, point.y),
+                            size = Size(width = 48f, height = size.height - point.y),
+                            color = barSeries.color,
+                            style = getBarStyle(barSeries.style),
+                    )
+                else {
+                    if (pos == 0)
+                        drawRect(
+                                topLeft = Offset(point.x - 24, point.y),
+                                size = Size(width = 24f, height = size.height - point.y),
+                                color = barSeries.color,
+                                style = getBarStyle(barSeries.style),
+                        )
+                    else
+                        drawRect(
+                                topLeft = Offset(point.x + 2, point.y),
+                                size = Size(width = 24f, height = size.height - point.y),
+                                color = barSeries.color,
+                                style = getBarStyle(barSeries.style),
+                        )
+                }
+            }
+            VERTICAL_STACKED -> drawRect(
+                    topLeft = Offset(point.x - 24, point.y),
+                    size = Size(width = 48f, height = size.height - point.y),
+                    color = barSeries.color,
+                    style = getBarStyle(barSeries.style),
+            )
+            HORIZONTAL -> TODO()
+            HORIZONTAL_STACKED -> TODO()
+        }
 
+    }
 }
 
 /**
@@ -166,13 +197,18 @@ private fun DrawScope.drawGrids(count: Int, color: Color) {
 //            pathEffect = pathEffect
         )
         // Vertical lines
-        drawLine(
-                color = color,
-                start = Offset(i * mHGap, 0f),
-                end = Offset(i * mHGap, size.height),
-//            pathEffect = pathEffect
-        )
+//        drawLine(
+//                color = color,
+//                start = Offset(i * mHGap, 0f),
+//                end = Offset(i * mHGap, size.height),
+////            pathEffect = pathEffect
+//        )
     }
+}
+
+private fun getBarStyle(style: BarStyleType): DrawStyle {
+    if (style == BarStyleType.FILL) return Fill
+    return Stroke(3f)
 }
 
 
