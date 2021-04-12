@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,13 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.BarChart
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.sample.databinding.FragmentBarBinding
 
-class BarFragment : Fragment() {
+
+
+
+class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var barViewModel: BarViewModel
     private var _binding: FragmentBarBinding? = null
@@ -41,8 +46,17 @@ class BarFragment : Fragment() {
             barViewModel.add()
         }
 
+        val spinner: Spinner = binding.spinner
+        val aa = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, barViewModel.spinnerData)
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         val barChart: ComposeView = binding.chartBar
-        barViewModel.spentSeries.observe(viewLifecycleOwner, Observer {
+        spinner.onItemSelectedListener = this
+
+        // Set layout to use when the list of choices appear
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Set Adapter to Spinner
+        spinner.adapter = aa
+        barViewModel.selectedSpinnerData.observe(viewLifecycleOwner, {
             barChart.apply {
                 setContent {
                     BarChart(
@@ -50,20 +64,30 @@ class BarFragment : Fragment() {
                                     .fillMaxWidth()
                                     .fillMaxHeight()
                                     .background(color = Color.White),
-                            data = arrayListOf(
-                                    barViewModel.spentSeries.value!!,
-                                    barViewModel.goalSeries
-                            ),
+                            data =  if (it == "0") {
+                                arrayListOf(barViewModel.spentSeries)
+                            } else {
+                                arrayListOf(barViewModel.spentSeries, barViewModel.goalSeries)
+                            },
                             legendPos = LegendPosition.TOP_RIGHT
                     )
                 }
             }
         })
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        barViewModel.changeData(p2.toString())
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 }

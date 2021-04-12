@@ -11,24 +11,28 @@ import kotlin.random.Random
 
 class BarViewModel : ViewModel() {
 
+    val spinnerData: List<String> = listOf("1", "2")
+    private val _selectedSpinnerData: MutableLiveData<String> = MutableLiveData<String>().apply { value = spinnerData[0] }
+
+    val selectedSpinnerData: LiveData<String> = _selectedSpinnerData
+
     /**
      * BarSeries for expense.
      */
-    private val _spentSeries = MutableLiveData<BarSeries<Int>>().apply {
-        value = BarSeries(
-                data = mutableListOf(
-                        ChartData(1, 50f),
-                        ChartData(2, 350f),
-                        ChartData(3, 250f),
-                        ChartData(4, 200f),
-                        ChartData(5, 800f),
-                        ChartData(6, 500f),
-                        ChartData(7, 600f)
-                ),
-                type = BarChartType.NORMAL,
-                legend = "Spent"
-        )
-    }
+    private val _spentSeries = BarSeries(
+            data = mutableListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                    ChartData(6, 500f),
+                    ChartData(7, 600f)
+            ),
+            type = BarChartType.NORMAL,
+            legend = "Spent"
+    )
+
 
     /**
      * LineSeries for budget goal.
@@ -50,10 +54,10 @@ class BarViewModel : ViewModel() {
     /**
      * BarSeries for expense.
      */
-    val spentSeries: LiveData<BarSeries<Int>> = _spentSeries
+    val spentSeries: BarSeries<Int> = _spentSeries
 
     /**
-     * LineSeries for budget goal.
+     * BarSeries for budget goal.
      */
     val goalSeries: BarSeries<Int> = _goalSeries
 
@@ -61,9 +65,9 @@ class BarViewModel : ViewModel() {
      * Add random BarSeries.
      */
     fun add() {
-        (_spentSeries.value!!.data as MutableList).add(
+        (_spentSeries.data as MutableList).add(
                 ChartData(
-                        _spentSeries.value!!.data.size + 1,
+                        _spentSeries.data.size + 1,
                         Random.nextInt(100, 1000).toFloat()
                 ),
         )
@@ -74,7 +78,11 @@ class BarViewModel : ViewModel() {
                 ),
         )
 
-        _spentSeries.value = _spentSeries.value
+        _selectedSpinnerData.value = _selectedSpinnerData.value
+    }
+
+    fun changeData(data: String) {
+        _selectedSpinnerData.value = data
     }
 
 }
