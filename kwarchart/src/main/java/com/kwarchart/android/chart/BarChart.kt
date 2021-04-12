@@ -45,7 +45,7 @@ fun <T> BarChart(
         gridsColor: Color = Color.Gray,
         showGrid: Boolean = true,
         legendPos: LegendPosition? = null,
-        type : BarChartType = BarChartType.VERTICAL
+        type: BarChartType = VERTICAL
 ) {
     val keys = mutableListOf<T>()
 
@@ -97,7 +97,7 @@ fun <T> BarChart(
             if (showAxes) {
                 drawAxes(axesColor, keys)
             }
-            data.forEachIndexed {index, element ->
+            data.forEachIndexed { index, element ->
                 drawData(element, index, data.size, type)
             }
 
@@ -288,15 +288,36 @@ fun BarChartPreview() {
             yAxisName = "Y Axis",
             data = arrayListOf(
                     BarSeries(
-                            data = arrayListOf(
-                                    ChartData(1, 50f),
+                            data = mutableListOf(
+                                    ChartData("january", 100f),
+                                    ChartData(2, 300f),
+                                    ChartData(3, 1100f),
+                                    ChartData(4, 200f),
+                                    ChartData(5, 850f),
+                                    ChartData(6, 400f),
+                                    ChartData(7, 610f)
+                            ),
+                            color = Color.Green,
+                            legend = "Budget"
+                    ),
+                    BarSeries(
+                            data = mutableListOf(
+                                    ChartData("january", 50f),
                                     ChartData(2, 350f),
                                     ChartData(3, 250f),
                                     ChartData(4, 200f),
                                     ChartData(5, 800f),
+                                    ChartData(6, 500f),
+                                    ChartData(7, 600f)
                             ),
-                            legend = "Data"
+                            legend = "Spent"
                     )
-            )
+            ),
+            type = VERTICAL,
+//            type = VERTICAL_STACKED,
+
+            ///TODO
+//            type = HORIZONTAL,
+//            type = HORIZONTAL_STACKED,
     )
 }
