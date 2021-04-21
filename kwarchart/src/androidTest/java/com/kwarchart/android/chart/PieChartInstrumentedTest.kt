@@ -11,31 +11,34 @@ import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.PieSeries
 import org.junit.Rule
 import org.junit.Test
+import kotlin.random.Random
 
 class PieChartInstrumentedTest {
 
-    private val mPieSeries = arrayListOf(
-        PieSeries(
-            data = ChartData("Bills", 1050f),
-            color = Color.Red,
-            legend = "Bills"
-        ),
-        PieSeries(
-            data = ChartData("Shopping", 500f),
-            color = Color.Green,
-            legend = "Shopping"
-        ),
-        PieSeries(
-            data = ChartData("Food", 2050f),
-            color = Color.Blue,
-            legend = "Food"
-        ),
-        PieSeries(
-            data = ChartData("Transportation", 800f),
-            color = Color.Yellow,
-            legend = "Transportation"
-        ),
-    )
+    private val mPieSeries = arrayListOf<PieSeries<String>>()
+
+    init {
+        val initialLabels = arrayListOf(
+            "Bills", "Shopping", "Food", "Transportation"
+        )
+        val initialValues = arrayListOf(
+            1050f, 500f, 2050f, 800f
+        )
+
+        initialValues.forEachIndexed { i, fl ->
+            mPieSeries.add(
+                PieSeries(
+                    data = ChartData(initialLabels[i], fl),
+                    color = Color(
+                        Random.nextInt(255),
+                        Random.nextInt(255),
+                        Random.nextInt(255)
+                    ),
+                    legend = "${initialLabels[i]} ($fl)"
+                )
+            )
+        }
+    }
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -87,10 +90,9 @@ class PieChartInstrumentedTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Bills").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Shopping").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Food").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Transportation").assertIsDisplayed()
+        mPieSeries.forEach {
+            composeTestRule.onNodeWithText("${it.legend}").assertIsDisplayed()
+        }
     }
 
     @Test
@@ -104,10 +106,9 @@ class PieChartInstrumentedTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Bills").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Shopping").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Food").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Transportation").assertDoesNotExist()
+        mPieSeries.forEach {
+            composeTestRule.onNodeWithText("${it.legend}").assertDoesNotExist()
+        }
     }
 
 }

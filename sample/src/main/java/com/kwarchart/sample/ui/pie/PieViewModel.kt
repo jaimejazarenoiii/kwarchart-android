@@ -14,27 +14,29 @@ class PieViewModel : ViewModel() {
      * PieChart data.
      */
     private val _chartData = MutableLiveData<MutableList<PieSeries<String>>>().apply {
-        value = arrayListOf(
-            PieSeries(
-                data = ChartData("Bills", 1050f),
-                color = Color.Red,
-                legend = "Bills"
-            ),
-            PieSeries(
-                data = ChartData("Shopping", 500f),
-                color = Color.Green,
-                legend = "Shopping"
-            ),
-            PieSeries(
-                data = ChartData("Food", 2050f),
-                color = Color.Blue,
-                legend = "Food"
-            ),
-            PieSeries(
-                data = ChartData("Transportation", 800f),
-                legend = "Transportation"
-            ),
+        val initialLabels = arrayListOf(
+            "Bills", "Shopping", "Food", "Transportation"
         )
+        val initialValues = arrayListOf(
+            1050f, 500f, 2050f, 800f
+        )
+        val initialPieSeries = arrayListOf<PieSeries<String>>()
+
+        initialValues.forEachIndexed { i, fl ->
+            initialPieSeries.add(
+                PieSeries(
+                    data = ChartData(initialLabels[i], fl),
+                    color = Color(
+                        Random.nextInt(255),
+                        Random.nextInt(255),
+                        Random.nextInt(255)
+                    ),
+                    legend = "${initialLabels[i]} ($fl)"
+                )
+            )
+        }
+
+        value = initialPieSeries
     }
 
     /**
@@ -46,19 +48,18 @@ class PieViewModel : ViewModel() {
      * Add random PieSeries.
      */
     fun add() {
-        _chartData.value!!.size
+        val label = "New ${_chartData.value!!.size}"
+        val value = Random.nextInt(100, 1000).toFloat()
+
         _chartData.value!!.add(
             PieSeries(
-                data = ChartData(
-                    "New ${_chartData.value!!.size}",
-                    Random.nextInt(100, 1000).toFloat()
-                ),
+                data = ChartData(label, value),
                 color = Color(
                     Random.nextInt(255),
                     Random.nextInt(255),
                     Random.nextInt(255)
                 ),
-                legend = "New ${_chartData.value!!.size}"
+                legend = "$label ($value)"
             )
         )
 
