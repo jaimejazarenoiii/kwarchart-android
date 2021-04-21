@@ -7,7 +7,7 @@
     tools:context=".ui.pie.PieFragment">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/chartPie"
+        android:id="@+id/chart_pie"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
-        app:layout_constraintBottom_toTopOf="@+id/chartPie"
+        app:layout_constraintBottom_toTopOf="@+id/chart_pie"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

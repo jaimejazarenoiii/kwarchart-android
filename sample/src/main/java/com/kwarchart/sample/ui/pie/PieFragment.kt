@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.PieChart
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentPieBinding
 
 class PieFragment : Fragment() {
@@ -52,7 +53,7 @@ class PieFragment : Fragment() {
                             .fillMaxHeight()
                             .background(color = Color.White),
                         data = it,
-                        title = "This month's transactions",
+                        title = resources.getString(R.string.title_pie_chart),
                         legendPos = LegendPosition.RIGHT
                     )
                 }

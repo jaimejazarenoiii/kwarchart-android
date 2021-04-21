@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.LineChart
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentLineBinding
 
 class LineFragment : Fragment() {
@@ -53,9 +54,9 @@ class LineFragment : Fragment() {
                             lineViewModel.spentSeries.value!!,
                             lineViewModel.goalSeries
                         ),
-                        title = "This week's transactions",
-                        yAxisName = "Spent",
-                        xAxisName = "Day",
+                        title = resources.getString(R.string.title_line_chart),
+                        yAxisName = resources.getString(R.string.y_axis_line_chart),
+                        xAxisName = resources.getString(R.string.x_axis_line_chart),
                         legendPos = LegendPosition.TOP_RIGHT
                     )
                 }
