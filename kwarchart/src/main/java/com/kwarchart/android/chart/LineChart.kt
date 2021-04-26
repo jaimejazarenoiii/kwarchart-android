@@ -288,7 +288,7 @@ private fun <T> getDataPoint(
 
 @Preview
 @Composable
-fun LineChartPreview() {
+fun LineChartNormalPreview() {
     LineChart(
         modifier = Modifier
             .fillMaxWidth()
@@ -305,6 +305,32 @@ fun LineChartPreview() {
                     ChartData(4, 200f),
                     ChartData(5, 800f),
                 ),
+                legend = "Data"
+            )
+        )
+    )
+}
+
+@Preview
+@Composable
+fun LineChartSmoothPreview() {
+    LineChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            LineSeries(
+                data = arrayListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                ),
+                type = LineChartType.SMOOTH,
                 legend = "Data"
             )
         )
