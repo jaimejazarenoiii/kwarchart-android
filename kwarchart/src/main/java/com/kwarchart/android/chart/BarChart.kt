@@ -122,14 +122,14 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
                     // Draw 2 bars
                     if (pos == 0)
                         drawRect(
-                                topLeft = Offset(point.x - 21, point.y),
+                                topLeft = Offset(point.x - barSeries.width - 1, point.y),
                                 size = Size(width = barSeries.width, height = size.height - point.y),
                                 color = barSeries.color,
                                 style = getBarStyle(barSeries.style),
                         )
                     else
                         drawRect(
-                                topLeft = Offset(point.x + 1, point.y),
+                                topLeft = Offset(point.x + barSeries.width + 1, point.y),
                                 size = Size(width = barSeries.width, height = size.height - point.y),
                                 color = barSeries.color,
                                 style = getBarStyle(barSeries.style),
