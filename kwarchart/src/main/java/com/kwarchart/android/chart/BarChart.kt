@@ -33,6 +33,21 @@ private var mMaxLen = 0
 
 /**
  *
+ * @param data List<BarSeries<T>> Data for Bar Series
+ * @param xAxisName String Title name for X Axis
+ * @param yAxisName String Title name for Y Axis
+ * @param axesColor Color Color display for title
+ * @param showAxes Boolean Determine whether to show axes title
+ * @param gridsColor Color display for grids
+ * @param showGrid Boolean show grid lines
+ * @param legendPos LegendPosition Legend position
+ * @param type BarChartType Chart type for Bar,
+ *         Available:
+ *           VERTICAL,
+ *           VERTICAL_STACKED,
+ *           HORIZONTAL,
+ *           HORIZONTAL_STACKED
+ *
  */
 @Composable
 fun <T> BarChart(
