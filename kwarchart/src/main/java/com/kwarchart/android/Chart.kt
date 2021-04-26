@@ -30,12 +30,20 @@ private const val WEIGHT_X_AXIS_NAME = 1f
 @Composable
 fun Chart(
     modifier: Modifier = Modifier,
+    title: String? = null,
     xAxisName: String? = null,
     yAxisName: String? = null,
     legend: Legend? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        title?.let {
+            Text(it)
+        }
+
         if (legend != null) TopLegends(legend)
 
         Row(
@@ -199,16 +207,18 @@ private fun VerticalLegends(
 ) {
     Column(modifier = modifier) {
         legend.legends.forEachIndexed { i, text ->
-            Box(
-                modifier = Modifier.size(10.dp).background(
-                    color = legend.colors[i],
-                    shape = CircleShape
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier.size(10.dp).background(
+                        color = legend.colors[i],
+                        shape = CircleShape
+                    )
                 )
-            )
-            Text(
-                text = text,
-                modifier = Modifier.padding(start = 5.dp)
-            )
+                Text(
+                    text = text,
+                    modifier = Modifier.padding(start = 5.dp)
+                )
+            }
         }
     }
 }

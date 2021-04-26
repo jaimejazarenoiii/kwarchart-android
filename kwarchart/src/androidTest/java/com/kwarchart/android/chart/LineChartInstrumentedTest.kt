@@ -1,6 +1,5 @@
 package com.kwarchart.android.chart
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,6 +60,7 @@ class LineChartInstrumentedTest {
                     .width(300.dp)
                     .height(300.dp),
                 data = mOneLineSeries,
+                title = "This week's transactions",
                 yAxisName = "Spent",
                 xAxisName = "Day"
             )
@@ -70,6 +70,29 @@ class LineChartInstrumentedTest {
         composeTestRule.onRoot().assertWidthIsEqualTo(300.dp)
         // Height test
         composeTestRule.onRoot().assertHeightIsEqualTo(300.dp)
+        // Title test
+        composeTestRule.onNodeWithText("This week's transactions").assertIsDisplayed()
+        // Y-axis name test
+        composeTestRule.onNodeWithText("Spent").assertIsDisplayed()
+        // X-axis name test
+        composeTestRule.onNodeWithText("Day").assertIsDisplayed()
+    }
+
+    @Test
+    fun lineSeriesNoTitleTest() {
+        composeTestRule.setContent {
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneLineSeries,
+                yAxisName = "Spent",
+                xAxisName = "Day"
+            )
+        }
+
+        // Title test
+        composeTestRule.onNodeWithText("This week's transactions").assertDoesNotExist()
         // Y-axis name test
         composeTestRule.onNodeWithText("Spent").assertIsDisplayed()
         // X-axis name test
@@ -83,10 +106,13 @@ class LineChartInstrumentedTest {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp),
-                data = mOneLineSeries
+                data = mOneLineSeries,
+                title = "This week's transactions"
             )
         }
 
+        // Title test
+        composeTestRule.onNodeWithText("This week's transactions").assertIsDisplayed()
         // Y-axis name test
         composeTestRule.onNodeWithText("Spent").assertDoesNotExist()
         // X-axis name test
