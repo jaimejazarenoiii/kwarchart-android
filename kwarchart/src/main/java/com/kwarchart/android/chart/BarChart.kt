@@ -113,7 +113,7 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
                 if (totalSize < 2)
                     // Draw a single bar
                     drawRect(
-                            topLeft = Offset(point.x - 20, point.y),
+                            topLeft = Offset(point.x - barSeries.width, point.y),
                             size = Size(width = barSeries.width, height = size.height - point.y),
                             color = barSeries.color,
                             style = getBarStyle(barSeries.style),
@@ -137,7 +137,7 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
                 }
             }
             VERTICAL_STACKED -> drawRect(
-                    topLeft = Offset(point.x - 20, point.y),
+                    topLeft = Offset(point.x - barSeries.width, point.y),
                     size = Size(width = barSeries.width, height = size.height - point.y),
                     color = barSeries.color,
                     style = getBarStyle(barSeries.style),
