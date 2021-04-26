@@ -60,7 +60,7 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                                 arrayListOf(barViewModel.goalSeries, barViewModel.spentSeries)
                             },
                             legendPos = LegendPosition.TOP_RIGHT,
-                            type = BarChartType.VERTICAL_STACKED,
+                            type = BarChartType.VERTICAL,
                     )
                 }
             }

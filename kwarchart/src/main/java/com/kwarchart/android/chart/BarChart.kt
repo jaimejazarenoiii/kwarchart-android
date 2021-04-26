@@ -113,7 +113,7 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
                 if (totalSize < 2)
                     // Draw a single bar
                     drawRect(
-                            topLeft = Offset(point.x - barSeries.width, point.y),
+                            topLeft = Offset(point.x - barSeries.width / 2, point.y),
                             size = Size(width = barSeries.width, height = size.height - point.y),
                             color = barSeries.color,
                             style = getBarStyle(barSeries.style),
@@ -129,7 +129,7 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
                         )
                     else
                         drawRect(
-                                topLeft = Offset(point.x + barSeries.width + 1, point.y),
+                                topLeft = Offset(point.x + 1, point.y),
                                 size = Size(width = barSeries.width, height = size.height - point.y),
                                 color = barSeries.color,
                                 style = getBarStyle(barSeries.style),
@@ -137,7 +137,7 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
                 }
             }
             VERTICAL_STACKED -> drawRect(
-                    topLeft = Offset(point.x - barSeries.width, point.y),
+                    topLeft = Offset(point.x - barSeries.width / 2, point.y),
                     size = Size(width = barSeries.width, height = size.height - point.y),
                     color = barSeries.color,
                     style = getBarStyle(barSeries.style),
@@ -293,18 +293,18 @@ fun BarChartPreview() {
                             color = Color.Green,
                             legend = "Budget"
                     ),
-                    BarSeries(
-                            data = mutableListOf(
-                                    ChartData("january", 50f),
-                                    ChartData(2, 350f),
-                                    ChartData(3, 250f),
-                                    ChartData(4, 200f),
-                                    ChartData(5, 800f),
-                                    ChartData(6, 500f),
-                                    ChartData(7, 600f)
-                            ),
-                            legend = "Spent"
-                    )
+//                    BarSeries(
+//                            data = mutableListOf(
+//                                    ChartData("january", 50f),
+//                                    ChartData(2, 350f),
+//                                    ChartData(3, 250f),
+//                                    ChartData(4, 200f),
+//                                    ChartData(5, 800f),
+//                                    ChartData(6, 500f),
+//                                    ChartData(7, 600f)
+//                            ),
+//                            legend = "Spent"
+//                    )
             ),
 /// Change type to change Compose Preview
             type = VERTICAL,
