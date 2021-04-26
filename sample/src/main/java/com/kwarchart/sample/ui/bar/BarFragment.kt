@@ -20,12 +20,10 @@ import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.sample.databinding.FragmentBarBinding
 
-
 class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var barViewModel: BarViewModel
     private var _binding: FragmentBarBinding? = null
-
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -35,26 +33,19 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
     ): View {
         barViewModel =
                 ViewModelProvider(this).get(BarViewModel::class.java)
-
         _binding = FragmentBarBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         val add: Button = binding.add
         add.setOnClickListener {
             barViewModel.add()
         }
-
         binding.spinner.apply {
             val aa = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, barViewModel.spinnerData)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             onItemSelectedListener = this@BarFragment
-            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             adapter = aa
         }
         val barChart: ComposeView = binding.chartBar
-
-        // Set layout to use when the list of choices appear
-        // Set Adapter to Spinner
         barViewModel.selectedSpinnerData.observe(viewLifecycleOwner, {
             barChart.apply {
                 setContent {
@@ -69,12 +60,11 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                                 arrayListOf(barViewModel.goalSeries, barViewModel.spentSeries)
                             },
                             legendPos = LegendPosition.TOP_RIGHT,
-                            type = BarChartType.VERTICAL_STACKED,
-                            )
+                            type = BarChartType.VERTICAL,
+                    )
                 }
             }
         })
-
         return root
     }
 

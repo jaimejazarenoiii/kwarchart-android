@@ -7,15 +7,11 @@ import com.kwarchart.android.enum.BarStyleType
  * BarChart data.
  */
 data class BarSeries<T>(
+
         /**
          * Data to be plotted in LineChart.
          */
         val data: List<ChartData<T>>,
-
-//        /**
-//         * Type of BarChart for this bar series.
-//         */
-//        val type: BarChartType = BarChartType.VERTICAL,
 
         /**
          * Color of the bar series.
@@ -25,12 +21,7 @@ data class BarSeries<T>(
         /**
          * Width of the bar series.
          */
-        val width: Int = 5,
-
-        /**
-         * Color of the area in the bar series.
-         */
-        val areaColor: Color = Color.Black,
+        val width: Float = 20f,
 
         /**
          * Legend for the bar series.

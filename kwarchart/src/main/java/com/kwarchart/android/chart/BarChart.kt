@@ -53,18 +53,15 @@ fun <T> BarChart(
         if (mMaxLen < it.data.size) {
             mMaxLen = it.data.size
         }
-
         it.data.forEach { chartData ->
             if (mMaxVal < chartData.value) {
                 mMaxVal = chartData.value
             }
-
             if (!keys.contains(chartData.key)) {
                 keys.add(chartData.key)
             }
         }
     }
-
     Chart(
             modifier = modifier,
             xAxisName = xAxisName,
@@ -90,7 +87,6 @@ fun <T> BarChart(
         ) {
             mHGap = size.width / (mMaxLen + 0.5f)
             mVGap = size.height / mMaxLen
-
             if (showGrid) {
                 drawGrids(mMaxLen, gridsColor)
             }
@@ -100,11 +96,9 @@ fun <T> BarChart(
             data.forEachIndexed { index, element ->
                 drawData(element, index, data.size, type)
             }
-
         }
     }
 }
-
 
 /**
  * Plot line chart data.
@@ -117,39 +111,40 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
         when (barChartType) {
             VERTICAL -> {
                 if (totalSize < 2)
+                    // Draw a single bar
                     drawRect(
-                            topLeft = Offset(point.x - 24, point.y),
-                            size = Size(width = 48f, height = size.height - point.y),
+                            topLeft = Offset(point.x - 20, point.y),
+                            size = Size(width = barSeries.width, height = size.height - point.y),
                             color = barSeries.color,
                             style = getBarStyle(barSeries.style),
                     )
                 else {
+                    // Draw 2 bars
                     if (pos == 0)
                         drawRect(
-                                topLeft = Offset(point.x - 24, point.y),
-                                size = Size(width = 24f, height = size.height - point.y),
+                                topLeft = Offset(point.x - 21, point.y),
+                                size = Size(width = barSeries.width, height = size.height - point.y),
                                 color = barSeries.color,
                                 style = getBarStyle(barSeries.style),
                         )
                     else
                         drawRect(
-                                topLeft = Offset(point.x + 2, point.y),
-                                size = Size(width = 24f, height = size.height - point.y),
+                                topLeft = Offset(point.x + 1, point.y),
+                                size = Size(width = barSeries.width, height = size.height - point.y),
                                 color = barSeries.color,
                                 style = getBarStyle(barSeries.style),
                         )
                 }
             }
             VERTICAL_STACKED -> drawRect(
-                    topLeft = Offset(point.x - 24, point.y),
-                    size = Size(width = 48f, height = size.height - point.y),
+                    topLeft = Offset(point.x - 20, point.y),
+                    size = Size(width = barSeries.width, height = size.height - point.y),
                     color = barSeries.color,
                     style = getBarStyle(barSeries.style),
             )
             HORIZONTAL -> TODO()
             HORIZONTAL_STACKED -> TODO()
         }
-
     }
 }
 
@@ -186,7 +181,6 @@ private fun DrawScope.origin() = Offset(0f, size.height)
  */
 private fun DrawScope.drawGrids(count: Int, color: Color) {
     val startPoint = origin()
-//    val pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f))
 
     for (i in 1..count) {
         // Horizontal lines
@@ -194,23 +188,25 @@ private fun DrawScope.drawGrids(count: Int, color: Color) {
                 color = color,
                 start = Offset(0f, startPoint.y - i * mVGap),
                 end = Offset(size.width, startPoint.y - i * mVGap),
-//            pathEffect = pathEffect
         )
         // Vertical lines
 //        drawLine(
 //                color = color,
 //                start = Offset(i * mHGap, 0f),
 //                end = Offset(i * mHGap, size.height),
-////            pathEffect = pathEffect
 //        )
     }
 }
 
+/**
+ * Draw the bars with its preferred style.
+ *
+ * @param style BarStyleType.
+ */
 private fun getBarStyle(style: BarStyleType): DrawStyle {
     if (style == BarStyleType.FILL) return Fill
     return Stroke(3f)
 }
-
 
 /**
  * Draw X and Y axes.
@@ -236,15 +232,12 @@ private fun <T> DrawScope.drawAxes(
             start = startPoint,
             end = Offset(0f, 0f)
     )
-
     drawIntoCanvas {
         val valuePerGrid = mMaxVal / mMaxLen
-
         val valTextPaint = Paint()
         valTextPaint.textAlign = Paint.Align.RIGHT
         valTextPaint.textSize = AXIS_VALUES_FONT_SIZE
         valTextPaint.color = 0xff000000.toInt()
-
         val keyTextPaint = Paint()
         keyTextPaint.textAlign = Paint.Align.CENTER
         keyTextPaint.textSize = AXIS_VALUES_FONT_SIZE
@@ -313,10 +306,9 @@ fun BarChartPreview() {
                             legend = "Spent"
                     )
             ),
+/// Change type to change Compose Preview
             type = VERTICAL,
 //            type = VERTICAL_STACKED,
-
-            ///TODO
 //            type = HORIZONTAL,
 //            type = HORIZONTAL_STACKED,
     )

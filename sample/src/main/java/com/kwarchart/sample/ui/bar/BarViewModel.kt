@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
 import kotlin.random.Random
@@ -13,7 +12,6 @@ class BarViewModel : ViewModel() {
 
     val spinnerData: List<String> = listOf("1", "2")
     private val _selectedSpinnerData: MutableLiveData<String> = MutableLiveData<String>().apply { value = spinnerData[0] }
-
     val selectedSpinnerData: LiveData<String> = _selectedSpinnerData
 
     /**
@@ -31,7 +29,6 @@ class BarViewModel : ViewModel() {
             ),
             legend = "Spent"
     )
-
 
     /**
      * LineSeries for budget goal.
@@ -76,12 +73,10 @@ class BarViewModel : ViewModel() {
                         Random.nextInt(100, 1000).toFloat()
                 ),
         )
-
         _selectedSpinnerData.value = _selectedSpinnerData.value
     }
 
     fun changeData(data: String) {
         _selectedSpinnerData.value = data
     }
-
 }
