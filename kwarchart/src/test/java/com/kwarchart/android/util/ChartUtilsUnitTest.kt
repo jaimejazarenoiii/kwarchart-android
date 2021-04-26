@@ -33,4 +33,37 @@ class ChartUtilsUnitTest {
         }
     }
 
+    @Test
+    fun getEndAngles_isCorrect() {
+        val axisValues = ChartUtils.getEndAngles(floatArrayOf(
+            1050f, 500f, 2050f, 800f
+        ))
+
+        assertArrayEquals(
+            arrayListOf(
+                85.90909f,
+                40.909092f,
+                167.72728f,
+                65.454544f
+            ).toArray(),
+            axisValues.toArray()
+        )
+    }
+
+    @Test
+    fun getEndAngles_isWrong() {
+        val axisValues = ChartUtils.getEndAngles(floatArrayOf(
+            1050f, 500f, 2050f
+        ))
+        val unexpectedValues = arrayListOf(
+            85.90909f,
+            40.909092f,
+            167.72728f
+        )
+
+        axisValues.forEachIndexed { i, value ->
+            assertNotEquals(unexpectedValues[i], value)
+        }
+    }
+
 }
