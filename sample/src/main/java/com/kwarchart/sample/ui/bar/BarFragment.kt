@@ -54,13 +54,17 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                                     .fillMaxWidth()
                                     .fillMaxHeight()
                                     .background(color = Color.White),
-                            data = if (it == "0") {
+                            data = if (it == "0" || it == "2") {
                                 arrayListOf(barViewModel.spentSeries)
                             } else {
                                 arrayListOf(barViewModel.goalSeries, barViewModel.spentSeries)
                             },
                             legendPos = LegendPosition.TOP_RIGHT,
-                            type = BarChartType.VERTICAL,
+                            type = if (it == "0" || it == "1") {
+                                BarChartType.VERTICAL
+                            } else {
+                                BarChartType.VERTICAL_STACKED
+                            },
                     )
                 }
             }

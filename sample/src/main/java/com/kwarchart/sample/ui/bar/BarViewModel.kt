@@ -10,7 +10,7 @@ import kotlin.random.Random
 
 class BarViewModel : ViewModel() {
 
-    val spinnerData: List<String> = listOf("1", "2")
+    val spinnerData: List<String> = listOf("Vertical Normal 1 Datasource", "Vertical Normal 2 Datasource", "Vertical Stacked 1 Datasource", "Vertical Stacked 2 Datasource")
     private val _selectedSpinnerData: MutableLiveData<String> = MutableLiveData<String>().apply { value = spinnerData[0] }
     val selectedSpinnerData: LiveData<String> = _selectedSpinnerData
 
