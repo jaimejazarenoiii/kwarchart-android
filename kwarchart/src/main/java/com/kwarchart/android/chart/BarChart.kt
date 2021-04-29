@@ -53,6 +53,7 @@ private var mMaxLen = 0
 fun <T> BarChart(
         modifier: Modifier = Modifier,
         data: List<BarSeries<T>>,
+        title: String? = null,
         xAxisName: String? = null,
         yAxisName: String? = null,
         axesColor: Color = Color.Gray,
@@ -80,6 +81,7 @@ fun <T> BarChart(
     Chart(
             modifier = modifier,
             xAxisName = xAxisName,
+            title = title,
             yAxisName = yAxisName,
             legend = legendPos?.let { _ ->
                 val tmpLegend = Legend(legendPos)
