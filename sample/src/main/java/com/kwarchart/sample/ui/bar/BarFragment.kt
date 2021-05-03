@@ -27,44 +27,51 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        barViewModel =
-                ViewModelProvider(this).get(BarViewModel::class.java)
+        barViewModel = ViewModelProvider(this).get(BarViewModel::class.java)
         _binding = FragmentBarBinding.inflate(inflater, container, false)
+
         val root: View = binding.root
+
         val add: Button = binding.add
         add.setOnClickListener {
             barViewModel.add()
         }
+
         binding.spinner.apply {
             val aa = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, barViewModel.spinnerData)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             onItemSelectedListener = this@BarFragment
             adapter = aa
         }
+
         val barChart: ComposeView = binding.chartBar
         barViewModel.selectedSpinnerData.observe(viewLifecycleOwner, {
             barChart.apply {
                 setContent {
                     BarChart(
-                            modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                                    .background(color = Color.White),
-                            data = if (it == "0" || it == "2") {
-                                arrayListOf(barViewModel.spentSeries)
-                            } else {
-                                arrayListOf(barViewModel.goalSeries, barViewModel.spentSeries)
-                            },
-                            legendPos = LegendPosition.TOP_RIGHT,
-                            type = if (it == "0" || it == "1") {
-                                BarChartType.VERTICAL
-                            } else {
-                                BarChartType.VERTICAL_STACKED
-                            },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .background(color = Color.White),
+                        data = if (it == "0" || it == "2") {
+                            arrayListOf(barViewModel.spentSeries)
+                        } else {
+                            arrayListOf(
+                                barViewModel.goalSeries,
+                                barViewModel.spentSeries,
+                                barViewModel.spentSeries
+                            )
+                        },
+                        legendPos = LegendPosition.TOP_RIGHT,
+                        type = if (it == "0" || it == "1") {
+                            BarChartType.VERTICAL
+                        } else {
+                            BarChartType.VERTICAL_STACKED
+                        },
                     )
                 }
             }

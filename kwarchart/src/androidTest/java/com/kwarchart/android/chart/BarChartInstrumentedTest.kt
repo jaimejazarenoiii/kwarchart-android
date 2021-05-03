@@ -19,35 +19,35 @@ import org.junit.Test
 class BarChartInstrumentedTest {
 
     private val mOneBarSeries = arrayListOf(
-            BarSeries(
-                    data = arrayListOf(
-                            ChartData(1, 50f),
-                            ChartData(2, 350f),
-                            ChartData(3, 250f),
-                            ChartData(4, 200f),
-                            ChartData(5, 800f),
-                            ChartData(6, 500f),
-                            ChartData(7, 600f)
-                    ),
-                    legend = "Spent"
+        BarSeries(
+            data = arrayListOf(
+                ChartData(1, 50f),
+                ChartData(2, 350f),
+                ChartData(3, 250f),
+                ChartData(4, 200f),
+                ChartData(5, 800f),
+                ChartData(6, 500f),
+                ChartData(7, 600f)
             ),
+            legend = "Spent"
+        ),
     )
 
     private val mTwoBarSeries = arrayListOf(
-            mOneBarSeries.first(),
-            BarSeries(
-                    data = arrayListOf(
-                            ChartData(1, 100f),
-                            ChartData(2, 300f),
-                            ChartData(3, 200f),
-                            ChartData(4, 200f),
-                            ChartData(5, 800f),
-                            ChartData(6, 500f),
-                            ChartData(7, 610f)
-                    ),
-                    color = Color.Green,
-                    legend = "Budget"
-            )
+        mOneBarSeries.first(),
+        BarSeries(
+            data = arrayListOf(
+                ChartData(1, 100f),
+                ChartData(2, 300f),
+                ChartData(3, 200f),
+                ChartData(4, 200f),
+                ChartData(5, 800f),
+                ChartData(6, 500f),
+                ChartData(7, 610f)
+            ),
+            color = Color.Green,
+            legend = "Budget"
+        )
     )
 
     @get:Rule
@@ -57,15 +57,15 @@ class BarChartInstrumentedTest {
     fun barSeriesGeneralTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .width(300.dp)
-                            .height(300.dp)
-                            .background(color = Color.White),
-                    xAxisName = "Day",
-                    yAxisName = "Spent",
-                    title = "This week's transactions",
-                    data = mOneBarSeries,
-                    type = BarChartType.VERTICAL,
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(300.dp)
+                    .background(color = Color.White),
+                xAxisName = "Day",
+                yAxisName = "Spent",
+                title = "This week's transactions",
+                data = mOneBarSeries,
+                type = BarChartType.VERTICAL,
             )
         }
 
@@ -85,12 +85,12 @@ class BarChartInstrumentedTest {
     fun barSeriesNoTitleTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mOneBarSeries,
-                    yAxisName = "Spent",
-                    xAxisName = "Day"
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
+                yAxisName = "Spent",
+                xAxisName = "Day"
             )
         }
 
@@ -106,11 +106,11 @@ class BarChartInstrumentedTest {
     fun barSeriesNoAxesNamesTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mOneBarSeries,
-                    title = "This week's transactions"
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
+                title = "This week's transactions"
             )
         }
 
@@ -126,11 +126,11 @@ class BarChartInstrumentedTest {
     fun oneBarSeriesLegendTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mOneBarSeries,
-                    legendPos = LegendPosition.TOP_RIGHT
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
+                legendPos = LegendPosition.TOP_RIGHT
             )
         }
 
@@ -141,12 +141,12 @@ class BarChartInstrumentedTest {
     fun oneBarSeriesVerticalStackedTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mOneBarSeries,
-                    legendPos = LegendPosition.TOP_RIGHT,
-                    type = BarChartType.VERTICAL_STACKED
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
+                legendPos = LegendPosition.TOP_RIGHT,
+                type = BarChartType.VERTICAL_STACKED
             )
         }
 
@@ -157,10 +157,10 @@ class BarChartInstrumentedTest {
     fun oneBarSeriesNoLegendTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mOneBarSeries,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
             )
         }
 
@@ -171,11 +171,11 @@ class BarChartInstrumentedTest {
     fun twoBarSeriesLegendTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mTwoBarSeries,
-                    legendPos = LegendPosition.TOP_RIGHT
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mTwoBarSeries,
+                legendPos = LegendPosition.TOP_RIGHT
             )
         }
 
@@ -187,10 +187,10 @@ class BarChartInstrumentedTest {
     fun twoBarSeriesNoLegendTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                    data = mTwoBarSeries,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mTwoBarSeries,
             )
         }
 
@@ -202,17 +202,16 @@ class BarChartInstrumentedTest {
     fun twoBarSeriesVerticalStackedTest() {
         composeTestRule.setContent {
             BarChart(
-                    modifier = Modifier
-                            .width(300.dp)
-                            .height(300.dp),
-                    data = mTwoBarSeries,
-                    type = BarChartType.VERTICAL_STACKED
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(300.dp),
+                data = mTwoBarSeries,
+                type = BarChartType.VERTICAL_STACKED
             )
         }
 
         composeTestRule.onNodeWithText("Spent").assertDoesNotExist()
         composeTestRule.onNodeWithText("Budget").assertDoesNotExist()
     }
-
 
 }

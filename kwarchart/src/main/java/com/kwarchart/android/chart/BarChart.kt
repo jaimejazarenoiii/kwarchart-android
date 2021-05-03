@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.Chart
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.BarChartType.*
-import com.kwarchart.android.enum.BarStyleType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
@@ -32,36 +31,33 @@ private var mMaxVal = 0f
 private var mMaxLen = 0
 
 /**
+ * Bar chart.
  *
- * @param data List<BarSeries<T>> Data for Bar Series
- * @param xAxisName String Title name for X Axis
- * @param yAxisName String Title name for Y Axis
- * @param axesColor Color Color display for title
- * @param showAxes Boolean Determine whether to show axes title
- * @param gridsColor Color display for grids
- * @param showGrid Boolean show grid lines
- * @param legendPos LegendPosition Legend position
- * @param type BarChartType Chart type for Bar,
- *         Available:
- *           VERTICAL,
- *           VERTICAL_STACKED,
- *           HORIZONTAL,
- *           HORIZONTAL_STACKED
- *
+ * @param modifier Modifier.
+ * @param data List of BarSeries which will be plotted in this chart.
+ * @param type Chart type for Bar.
+ * @param title Chart title.
+ * @param xAxisName X-axis name.
+ * @param yAxisName Y-axis name.
+ * @param axesColor X and Y axes color
+ * @param showAxes Displayed state of axes.
+ * @param gridsColor Grids color.
+ * @param showGrid Displayed state of grids.
+ * @param legendPos Legend position.
  */
 @Composable
 fun <T> BarChart(
-        modifier: Modifier = Modifier,
-        data: List<BarSeries<T>>,
-        title: String? = null,
-        xAxisName: String? = null,
-        yAxisName: String? = null,
-        axesColor: Color = Color.Gray,
-        showAxes: Boolean = true,
-        gridsColor: Color = Color.Gray,
-        showGrid: Boolean = true,
-        legendPos: LegendPosition? = null,
-        type: BarChartType = VERTICAL
+    modifier: Modifier = Modifier,
+    data: List<BarSeries<T>>,
+    type: BarChartType = VERTICAL,
+    title: String? = null,
+    xAxisName: String? = null,
+    yAxisName: String? = null,
+    axesColor: Color = Color.Gray,
+    showAxes: Boolean = true,
+    gridsColor: Color = Color.Gray,
+    showGrid: Boolean = true,
+    legendPos: LegendPosition? = null
 ) {
     val keys = mutableListOf<T>()
 
@@ -78,32 +74,34 @@ fun <T> BarChart(
             }
         }
     }
+
     Chart(
-            modifier = modifier,
-            xAxisName = xAxisName,
-            title = title,
-            yAxisName = yAxisName,
-            legend = legendPos?.let { _ ->
-                val tmpLegend = Legend(legendPos)
-                data.forEach {
-                    tmpLegend.legends.add(it.legend)
-                    tmpLegend.colors.add(it.color)
-                }
-                tmpLegend
+        modifier = modifier,
+        xAxisName = xAxisName,
+        title = title,
+        yAxisName = yAxisName,
+        legend = legendPos?.let { _ ->
+            val tmpLegend = Legend(legendPos)
+            data.forEach {
+                tmpLegend.legends.add(it.legend)
+                tmpLegend.colors.add(it.color)
             }
+            tmpLegend
+        }
     ) {
         Canvas(
-                modifier = modifier
-                        .weight(5f)
-                        .padding(
-                                start = (mMaxVal.toString().length * 8).dp,
-                                top = 10.dp,
-                                end = 10.dp,
-                                bottom = AXIS_VALUES_FONT_SIZE.dp
-                        )
+            modifier = modifier
+                .weight(5f)
+                .padding(
+                    start = (mMaxVal.toString().length * 8).dp,
+                    top = 10.dp,
+                    end = 10.dp,
+                    bottom = AXIS_VALUES_FONT_SIZE.dp
+                )
         ) {
             mHGap = size.width / (mMaxLen + 0.5f)
             mVGap = size.height / mMaxLen
+
             if (showGrid) {
                 drawGrids(mMaxLen, gridsColor)
             }
@@ -121,43 +119,53 @@ fun <T> BarChart(
  * Plot line chart data.
  *
  * @param barSeries Data to be plotted in this chart.
+ * @param pos
+ * @param totalSize
+ * @param barChartType
  */
-private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize: Int, barChartType: BarChartType) {
+private fun <T> DrawScope.drawData(
+    barSeries: BarSeries<T>,
+    pos: Int,
+    totalSize: Int,
+    barChartType: BarChartType
+) {
     barSeries.data.forEachIndexed { i, chartData ->
         val point = getDataPoint(i, chartData, size.height)
+
         when (barChartType) {
             VERTICAL -> {
-                if (totalSize < 2)
+                if (totalSize < 2) {
                     // Draw a single bar
                     drawRect(
-                            topLeft = Offset(point.x - barSeries.width / 2, point.y),
-                            size = Size(width = barSeries.width, height = size.height - point.y),
-                            color = barSeries.color,
-                            style = getBarStyle(barSeries.style),
+                        topLeft = Offset(point.x - barSeries.width / 2, point.y),
+                        size = Size(width = barSeries.width, height = size.height - point.y),
+                        color = barSeries.color,
+//                        style = getBarStyle(barSeries.style),
                     )
-                else {
+                } else {
                     // Draw 2 bars
                     if (pos == 0)
                         drawRect(
-                                topLeft = Offset(point.x - barSeries.width - 1, point.y),
-                                size = Size(width = barSeries.width, height = size.height - point.y),
-                                color = barSeries.color,
-                                style = getBarStyle(barSeries.style),
+                            topLeft = Offset(point.x - barSeries.width - 1, point.y),
+                            size = Size(width = barSeries.width, height = size.height - point.y),
+                            color = barSeries.color,
+//                            style = getBarStyle(barSeries.style),
                         )
-                    else
+                    else {
                         drawRect(
-                                topLeft = Offset(point.x + 1, point.y),
-                                size = Size(width = barSeries.width, height = size.height - point.y),
-                                color = barSeries.color,
-                                style = getBarStyle(barSeries.style),
+                            topLeft = Offset(point.x + 1, point.y),
+                            size = Size(width = barSeries.width, height = size.height - point.y),
+                            color = barSeries.color,
+//                            style = getBarStyle(barSeries.style),
                         )
+                    }
                 }
             }
             VERTICAL_STACKED -> drawRect(
-                    topLeft = Offset(point.x - barSeries.width / 2, point.y),
-                    size = Size(width = barSeries.width, height = size.height - point.y),
-                    color = barSeries.color,
-                    style = getBarStyle(barSeries.style),
+                topLeft = Offset(point.x - barSeries.width / 2, point.y),
+                size = Size(width = barSeries.width, height = size.height - point.y),
+                color = barSeries.color,
+//                style = getBarStyle(barSeries.style),
             )
             HORIZONTAL -> TODO()
             HORIZONTAL_STACKED -> TODO()
@@ -175,12 +183,12 @@ private fun <T> DrawScope.drawData(barSeries: BarSeries<T>, pos: Int, totalSize:
  * @return Data point's position in canvas.
  */
 private fun <T> getDataPoint(
-        index: Int,
-        data: ChartData<T>,
-        canvasHeight: Float
+    index: Int,
+    data: ChartData<T>,
+    canvasHeight: Float
 ) = Offset(
-        (index + 1) * mHGap,
-        canvasHeight - ((data.value / mMaxVal) * canvasHeight)
+    (index + 1) * mHGap,
+    canvasHeight - ((data.value / mMaxVal) * canvasHeight)
 )
 
 /**
@@ -200,30 +208,23 @@ private fun DrawScope.drawGrids(count: Int, color: Color) {
     val startPoint = origin()
 
     for (i in 1..count) {
-        // Horizontal lines
         drawLine(
-                color = color,
-                start = Offset(0f, startPoint.y - i * mVGap),
-                end = Offset(size.width, startPoint.y - i * mVGap),
+            color = color,
+            start = Offset(0f, startPoint.y - i * mVGap),
+            end = Offset(size.width, startPoint.y - i * mVGap),
         )
-        // Vertical lines
-//        drawLine(
-//                color = color,
-//                start = Offset(i * mHGap, 0f),
-//                end = Offset(i * mHGap, size.height),
-//        )
     }
 }
 
-/**
- * Draw the bars with its preferred style.
- *
- * @param style BarStyleType.
- */
-private fun getBarStyle(style: BarStyleType): DrawStyle {
-    if (style == BarStyleType.FILL) return Fill
-    return Stroke(3f)
-}
+///**
+// * Draw the bars with its preferred style.
+// *
+// * @param style BarStyleType.
+// */
+//private fun getBarStyle(style: BarStyleType): DrawStyle {
+//    if (style == BarStyleType.FILL) return Fill
+//    return Stroke(3f)
+//}
 
 /**
  * Draw X and Y axes.
@@ -231,23 +232,20 @@ private fun getBarStyle(style: BarStyleType): DrawStyle {
  * @param color Axes color.
  * @param keys Keys to be plotted in the X-axis.
  */
-private fun <T> DrawScope.drawAxes(
-        color: Color,
-        keys: List<T>
-) {
+private fun <T> DrawScope.drawAxes(color: Color, keys: List<T>) {
     val startPoint = origin()
 
     // X-axis
     drawLine(
-            color = color,
-            start = startPoint,
-            end = Offset(size.width, startPoint.y)
+        color = color,
+        start = startPoint,
+        end = Offset(size.width, startPoint.y)
     )
     // Y-axis
     drawLine(
-            color = color,
-            start = startPoint,
-            end = Offset(0f, 0f)
+        color = color,
+        start = startPoint,
+        end = Offset(0f, 0f)
     )
     drawIntoCanvas {
         val valuePerGrid = mMaxVal / mMaxLen
@@ -262,25 +260,25 @@ private fun <T> DrawScope.drawAxes(
 
         keys.forEachIndexed { i, key ->
             val valOffset = Offset(
-                    -20f,
-                    (startPoint.y - (i + 1) * mVGap) + AXIS_VALUES_FONT_SIZE / 2
+                -20f,
+                (startPoint.y - (i + 1) * mVGap) + AXIS_VALUES_FONT_SIZE / 2
             )
             val keyOffset = Offset(
-                    (i + 1) * mHGap,
-                    startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
+                (i + 1) * mHGap,
+                startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
             )
 
             it.nativeCanvas.drawText(
-                    (valuePerGrid * (i + 1)).toInt().toString(),
-                    valOffset.x,
-                    valOffset.y,
-                    valTextPaint
+                (valuePerGrid * (i + 1)).toInt().toString(),
+                valOffset.x,
+                valOffset.y,
+                valTextPaint
             )
             it.nativeCanvas.drawText(
-                    key.toString(),
-                    keyOffset.x,
-                    keyOffset.y,
-                    keyTextPaint
+                key.toString(),
+                keyOffset.x,
+                keyOffset.y,
+                keyTextPaint
             )
         }
     }
@@ -288,45 +286,69 @@ private fun <T> DrawScope.drawAxes(
 
 @Preview
 @Composable
-fun BarChartPreview() {
+fun BarChartVerticalPreview() {
     BarChart(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .background(color = Color.White),
-            xAxisName = "X Axis",
-            yAxisName = "Y Axis",
-            data = arrayListOf(
-                    BarSeries(
-                            data = mutableListOf(
-                                    ChartData("january", 100f),
-                                    ChartData(2, 300f),
-                                    ChartData(3, 1100f),
-                                    ChartData(4, 200f),
-                                    ChartData(5, 850f),
-                                    ChartData(6, 400f),
-                                    ChartData(7, 610f)
-                            ),
-                            color = Color.Green,
-                            legend = "Budget"
-                    ),
-//                    BarSeries(
-//                            data = mutableListOf(
-//                                    ChartData("january", 50f),
-//                                    ChartData(2, 350f),
-//                                    ChartData(3, 250f),
-//                                    ChartData(4, 200f),
-//                                    ChartData(5, 800f),
-//                                    ChartData(6, 500f),
-//                                    ChartData(7, 600f)
-//                            ),
-//                            legend = "Spent"
-//                    )
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            BarSeries(
+                data = arrayListOf(
+                    ChartData(1, 100f),
+                    ChartData(2, 300f),
+                    ChartData(3, 1100f),
+                    ChartData(4, 200f),
+                    ChartData(5, 850f),
+                    ChartData(6, 400f),
+                    ChartData(7, 610f)
+                ),
+                color = Color.Green,
+                legend = "Budget"
+            )
+        )
+    )
+}
+
+@Preview
+@Composable
+fun BarChartVerticalStackPreview() {
+    BarChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            BarSeries(
+                data = mutableListOf(
+                    ChartData(1, 100f),
+                    ChartData(2, 300f),
+                    ChartData(3, 1100f),
+                    ChartData(4, 200f),
+                    ChartData(5, 850f),
+                    ChartData(6, 400f),
+                    ChartData(7, 610f)
+                ),
+                color = Color.Green,
+                legend = "Budget"
             ),
-/// Change type to change Compose Preview
-            type = VERTICAL,
-//            type = VERTICAL_STACKED,
-//            type = HORIZONTAL,
-//            type = HORIZONTAL_STACKED,
+            BarSeries(
+                data = mutableListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                    ChartData(6, 500f),
+                    ChartData(7, 600f)
+                ),
+                legend = "Spent"
+            )
+        ),
+        type = VERTICAL_STACKED
     )
 }

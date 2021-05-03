@@ -35,6 +35,7 @@ private var mMaxLen = 0
  *
  * @param modifier Modifier.
  * @param data List of LineSeries which will be plotted in this chart.
+ * @param title Chart title.
  * @param xAxisName X-axis name.
  * @param yAxisName Y-axis name.
  * @param axesColor X and Y axes color
