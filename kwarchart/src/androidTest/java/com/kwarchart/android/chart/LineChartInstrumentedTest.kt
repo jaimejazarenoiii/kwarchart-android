@@ -49,6 +49,24 @@ class LineChartInstrumentedTest {
         )
     )
 
+    private val mTwoLineSeriesArea = arrayListOf(
+        mOneLineSeries.first(),
+        LineSeries(
+            data = arrayListOf(
+                ChartData(1, 100f),
+                ChartData(2, 300f),
+                ChartData(3, 200f),
+                ChartData(4, 200f),
+                ChartData(5, 800f),
+                ChartData(6, 500f),
+                ChartData(7, 610f)
+            ),
+            type = LineChartType.AREA,
+            color = Color.Green,
+            legend = "Budget"
+        )
+    )
+
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -172,6 +190,37 @@ class LineChartInstrumentedTest {
                     .fillMaxWidth()
                     .height(300.dp),
                 data = mTwoLineSeries,
+            )
+        }
+
+        composeTestRule.onNodeWithText("Spent").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Budget").assertDoesNotExist()
+    }
+
+    @Test
+    fun twoLineSeriesAreaLegendTest() {
+        composeTestRule.setContent {
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mTwoLineSeriesArea,
+                legendPos = LegendPosition.TOP_RIGHT
+            )
+        }
+
+        composeTestRule.onNodeWithText("Spent").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Budget").assertIsDisplayed()
+    }
+
+    @Test
+    fun twoLineSeriesAreaNoLegendTest() {
+        composeTestRule.setContent {
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mTwoLineSeriesArea,
             )
         }
 

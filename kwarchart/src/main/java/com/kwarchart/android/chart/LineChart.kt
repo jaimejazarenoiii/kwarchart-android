@@ -9,9 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -220,15 +218,24 @@ private fun <T> DrawScope.drawAxes(
  */
 private fun <T> DrawScope.drawData(lineSeries: LineSeries<T>) {
     val path = Path()
+    val areaPath = if (lineSeries.type == LineChartType.AREA) {
+        Path()
+    } else {
+        null
+    }
     var leftPoint = origin()
+    var lastX = 0f
 
     path.moveTo(leftPoint.x, leftPoint.y)
+    areaPath?.moveTo(leftPoint.x, leftPoint.y)
 
     lineSeries.data.forEachIndexed { i, chartData ->
         val p = getDataPoint(i, chartData, size.height)
 
-        if (lineSeries.type == LineChartType.NORMAL) {
+        if (lineSeries.type != LineChartType.SMOOTH) {
             path.lineTo(p.x, p.y)
+            areaPath?.lineTo(p.x, p.y)
+            lastX = p.x
             return@forEachIndexed
         }
 
@@ -248,6 +255,19 @@ private fun <T> DrawScope.drawData(lineSeries: LineSeries<T>) {
         )
 
         leftPoint = p
+    }
+
+    if (lineSeries.type == LineChartType.AREA) {
+        areaPath?.lineTo(lastX, leftPoint.y)
+        drawPath(
+            path = areaPath!!,
+            color = Color(
+                red = lineSeries.color.red,
+                green = lineSeries.color.green,
+                blue = lineSeries.color.blue,
+                alpha = 0.5f
+            )
+        )
     }
 
     drawPath(
@@ -288,7 +308,7 @@ private fun <T> getDataPoint(
 
 @Preview
 @Composable
-fun LineChartPreview() {
+fun LineChartNormalPreview() {
     LineChart(
         modifier = Modifier
             .fillMaxWidth()
@@ -305,6 +325,58 @@ fun LineChartPreview() {
                     ChartData(4, 200f),
                     ChartData(5, 800f),
                 ),
+                legend = "Data"
+            )
+        )
+    )
+}
+
+@Preview
+@Composable
+fun LineChartSmoothPreview() {
+  LineChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            LineSeries(
+                data = arrayListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                ),
+                type = LineChartType.SMOOTH,
+                legend = "Data"
+            )
+        )
+    )
+}
+
+@Preview
+@Composable
+fun LineChartAreaPreview() {
+    LineChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            LineSeries(
+                data = arrayListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                ),
+                type = LineChartType.AREA,
                 legend = "Data"
             )
         )
