@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -100,20 +101,12 @@ private fun <T> DrawScope.drawArcs(data: List<PieSeries<T>>) {
  * @param data Data to be plotted in this chart.
  */
 private fun <T> DrawScope.drawDoughnutArcs(data: List<PieSeries<T>>) {
-    var startAngle = 0f
-
-    for (i in data.indices) {
-        val endAngle = mEndAngles[i]
-
-        drawArc(
-            startAngle = -startAngle,
-            sweepAngle = -endAngle,
-            color = data[i].color,
-            useCenter = true
-        )
-
-        startAngle += endAngle
-    }
+    drawArcs(data)
+    drawOval(
+        color = Color.White,
+        topLeft = Offset((size.width * 0.5f) / 2, (size.height * 0.5f) / 2),
+        size = Size(size.width * 0.5f, size.height * 0.5f)
+    )
 }
 
 /**
@@ -165,7 +158,7 @@ private fun <T> DrawScope.drawArcValues(data: List<PieSeries<T>>) {
 
 @Preview
 @Composable
-fun PieChartPreview() {
+fun PieChartNormalPreview() {
     PieChart(
         modifier = Modifier
             .fillMaxWidth()
@@ -193,6 +186,42 @@ fun PieChartPreview() {
                 legend = "Transportation"
             ),
         ),
+        title = "This month's transactions",
+        legendPos = LegendPosition.RIGHT
+    )
+}
+
+@Preview
+@Composable
+fun PieChartDoughnutPreview() {
+    PieChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        data = arrayListOf(
+            PieSeries(
+                data = ChartData("Bills", 1050f),
+                color = Color.Red,
+                legend = "Bills"
+            ),
+            PieSeries(
+                data = ChartData("Shopping", 500f),
+                color = Color.Green,
+                legend = "Shopping"
+            ),
+            PieSeries(
+                data = ChartData("Food", 2050f),
+                color = Color.Blue,
+                legend = "Food"
+            ),
+            PieSeries(
+                data = ChartData("Transportation", 800f),
+                color = Color.Yellow,
+                legend = "Transportation"
+            ),
+        ),
+        type = PieChartType.DOUGHNUT,
         title = "This month's transactions",
         legendPos = LegendPosition.RIGHT
     )
