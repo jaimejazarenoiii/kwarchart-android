@@ -265,6 +265,7 @@ fun DrawScope.origin() = Offset(0f, size.height)
  *
  * @param count Grid count.
  * @param color Grid color.
+ * @param xAxisEndPadding X-axis end padding.
  * @param showHorizontalLines Show/Hide horizontal lines.
  * @param showVerticalLines Show/Hide vertical lines.
  */
@@ -276,7 +277,7 @@ fun DrawScope.drawGrids(
     showVerticalLines: Boolean = true,
 ) {
     val hGap = size.height / count
-    val vGap = size.width / (count + xAxisEndPadding)
+    val vGap = (size.width - xAxisEndPadding) / count
 
     val startPoint = origin()
 //    val pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f))
@@ -311,6 +312,7 @@ fun DrawScope.drawGrids(
  * @param keys Keys to be plotted in the X-axis.
  * @param maxVal Value axis' max value.
  * @param maxLen Value axis' max length.
+ * @param xAxisEndPadding X-axis end padding.
  */
 fun <T> DrawScope.drawAxes(
     color: Color,
@@ -320,7 +322,7 @@ fun <T> DrawScope.drawAxes(
     xAxisEndPadding: Float = 0f
 ) {
     val hGap = size.height / keys.size
-    val vGap = (size.width + xAxisEndPadding) / maxLen
+    val vGap = (size.width - xAxisEndPadding) / maxLen
     val startPoint = origin()
 
     // X-axis

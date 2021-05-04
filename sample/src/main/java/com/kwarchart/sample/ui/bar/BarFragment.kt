@@ -62,7 +62,6 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         } else {
                             arrayListOf(
                                 barViewModel.goalSeries,
-                                barViewModel.spentSeries,
                                 barViewModel.spentSeries
                             )
                         },
