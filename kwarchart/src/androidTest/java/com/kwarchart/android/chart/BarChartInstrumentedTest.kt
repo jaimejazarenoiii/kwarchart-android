@@ -154,6 +154,38 @@ class BarChartInstrumentedTest {
     }
 
     @Test
+    fun oneBarSeriesHorizontalTest() {
+        composeTestRule.setContent {
+            BarChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
+                legendPos = LegendPosition.TOP_RIGHT,
+                type = BarChartType.HORIZONTAL
+            )
+        }
+
+        composeTestRule.onNodeWithText("Spent").assertIsDisplayed()
+    }
+
+    @Test
+    fun oneBarSeriesHorizontalStackedTest() {
+        composeTestRule.setContent {
+            BarChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                data = mOneBarSeries,
+                legendPos = LegendPosition.TOP_RIGHT,
+                type = BarChartType.HORIZONTAL_STACKED
+            )
+        }
+
+        composeTestRule.onNodeWithText("Spent").assertIsDisplayed()
+    }
+
+    @Test
     fun oneBarSeriesNoLegendTest() {
         composeTestRule.setContent {
             BarChart(
@@ -207,6 +239,38 @@ class BarChartInstrumentedTest {
                     .height(300.dp),
                 data = mTwoBarSeries,
                 type = BarChartType.VERTICAL_STACKED
+            )
+        }
+
+        composeTestRule.onNodeWithText("Spent").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Budget").assertDoesNotExist()
+    }
+
+    @Test
+    fun twoBarSeriesHorizontalTest() {
+        composeTestRule.setContent {
+            BarChart(
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(300.dp),
+                data = mTwoBarSeries,
+                type = BarChartType.HORIZONTAL
+            )
+        }
+
+        composeTestRule.onNodeWithText("Spent").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Budget").assertDoesNotExist()
+    }
+
+    @Test
+    fun twoBarSeriesHorizontalStackedTest() {
+        composeTestRule.setContent {
+            BarChart(
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(300.dp),
+                data = mTwoBarSeries,
+                type = BarChartType.HORIZONTAL_STACKED
             )
         }
 
