@@ -1,6 +1,5 @@
 package com.kwarchart.android.chart
 
-import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,23 +11,21 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.*
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kwarchart.android.AXIS_VALUES_FONT_SIZE
 import com.kwarchart.android.Chart
+import com.kwarchart.android.drawAxes
+import com.kwarchart.android.drawGrids
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.BarChartType.*
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.Legend
+import com.kwarchart.android.util.ChartUtils
 
-private const val AXIS_VALUES_FONT_SIZE = 32f
-
-private var mHGap = 0f
-private var mVGap = 0f
-private var mMaxVal = 0f
-private var mMaxLen = 0
+private const val X_AXIS_END_PADDING = 0.5f
 
 /**
  * Bar chart.
@@ -61,13 +58,16 @@ fun <T> BarChart(
 ) {
     val keys = mutableListOf<T>()
 
+    var maxLen = 0
+    var maxVal = 0f
+
     data.forEach {
-        if (mMaxLen < it.data.size) {
-            mMaxLen = it.data.size
+        if (maxLen < it.data.size) {
+            maxLen = it.data.size
         }
         it.data.forEach { chartData ->
-            if (mMaxVal < chartData.value) {
-                mMaxVal = chartData.value
+            if (maxVal < chartData.value) {
+                maxVal = chartData.value
             }
             if (!keys.contains(chartData.key)) {
                 keys.add(chartData.key)
@@ -93,23 +93,25 @@ fun <T> BarChart(
             modifier = modifier
                 .weight(5f)
                 .padding(
-                    start = (mMaxVal.toString().length * 8).dp,
+                    start = (maxVal.toString().length * 8).dp,
                     top = 10.dp,
                     end = 10.dp,
                     bottom = AXIS_VALUES_FONT_SIZE.dp
                 )
         ) {
-            mHGap = size.width / (mMaxLen + 0.5f)
-            mVGap = size.height / mMaxLen
-
             if (showGrid) {
-                drawGrids(mMaxLen, gridsColor)
+                drawGrids(
+                    maxLen,
+                    gridsColor,
+                    xAxisEndPadding = X_AXIS_END_PADDING,
+                    showVerticalLines = false
+                )
             }
             if (showAxes) {
-                drawAxes(axesColor, keys)
+                drawAxes(axesColor, keys, maxVal, maxLen, xAxisEndPadding = X_AXIS_END_PADDING)
             }
             data.forEachIndexed { index, element ->
-                drawData(element, index, data.size, type)
+                drawData(element, index, data.size, type, maxLen, maxVal)
             }
         }
     }
@@ -119,18 +121,24 @@ fun <T> BarChart(
  * Plot line chart data.
  *
  * @param barSeries Data to be plotted in this chart.
- * @param pos
- * @param totalSize
- * @param barChartType
+ * @param pos Index of "barSeries".
+ * @param totalSize Total data size in BarChart.
+ * @param barChartType Type of bar to draw.
+ * @param maxLen Max length of all passed data in BarChart.
+ * @param maxVal Max value of all passed data in BarChart.
  */
 private fun <T> DrawScope.drawData(
     barSeries: BarSeries<T>,
     pos: Int,
     totalSize: Int,
-    barChartType: BarChartType
+    barChartType: BarChartType,
+    maxLen: Int,
+    maxVal: Float
 ) {
+    val vGap = size.width / (maxLen + X_AXIS_END_PADDING)
+
     barSeries.data.forEachIndexed { i, chartData ->
-        val point = getDataPoint(i, chartData, size.height)
+        val point = ChartUtils.getDataPoint(i, chartData, size.height, vGap, maxVal)
 
         when (barChartType) {
             VERTICAL -> {
@@ -139,8 +147,7 @@ private fun <T> DrawScope.drawData(
                     drawRect(
                         topLeft = Offset(point.x - barSeries.width / 2, point.y),
                         size = Size(width = barSeries.width, height = size.height - point.y),
-                        color = barSeries.color,
-//                        style = getBarStyle(barSeries.style),
+                        color = barSeries.color
                     )
                 } else {
                     // Draw 2 bars
@@ -148,15 +155,13 @@ private fun <T> DrawScope.drawData(
                         drawRect(
                             topLeft = Offset(point.x - barSeries.width - 1, point.y),
                             size = Size(width = barSeries.width, height = size.height - point.y),
-                            color = barSeries.color,
-//                            style = getBarStyle(barSeries.style),
+                            color = barSeries.color
                         )
                     else {
                         drawRect(
                             topLeft = Offset(point.x + 1, point.y),
                             size = Size(width = barSeries.width, height = size.height - point.y),
-                            color = barSeries.color,
-//                            style = getBarStyle(barSeries.style),
+                            color = barSeries.color
                         )
                     }
                 }
@@ -165,121 +170,9 @@ private fun <T> DrawScope.drawData(
                 topLeft = Offset(point.x - barSeries.width / 2, point.y),
                 size = Size(width = barSeries.width, height = size.height - point.y),
                 color = barSeries.color,
-//                style = getBarStyle(barSeries.style),
             )
             HORIZONTAL -> TODO()
             HORIZONTAL_STACKED -> TODO()
-        }
-    }
-}
-
-/**
- * Get position of data point to be plotted in chart.
- *
- * @param index Data index.
- * @param data Chart data.
- * @param canvasHeight Canvas' height.
- *
- * @return Data point's position in canvas.
- */
-private fun <T> getDataPoint(
-    index: Int,
-    data: ChartData<T>,
-    canvasHeight: Float
-) = Offset(
-    (index + 1) * mHGap,
-    canvasHeight - ((data.value / mMaxVal) * canvasHeight)
-)
-
-/**
- * Canvas' origin point.
- *
- * @return Offset point.
- */
-private fun DrawScope.origin() = Offset(0f, size.height)
-
-/**
- * Draw line chart grids.
- *
- * @param count Grid count.
- * @param color Grid color.
- */
-private fun DrawScope.drawGrids(count: Int, color: Color) {
-    val startPoint = origin()
-
-    for (i in 1..count) {
-        drawLine(
-            color = color,
-            start = Offset(0f, startPoint.y - i * mVGap),
-            end = Offset(size.width, startPoint.y - i * mVGap),
-        )
-    }
-}
-
-///**
-// * Draw the bars with its preferred style.
-// *
-// * @param style BarStyleType.
-// */
-//private fun getBarStyle(style: BarStyleType): DrawStyle {
-//    if (style == BarStyleType.FILL) return Fill
-//    return Stroke(3f)
-//}
-
-/**
- * Draw X and Y axes.
- *
- * @param color Axes color.
- * @param keys Keys to be plotted in the X-axis.
- */
-private fun <T> DrawScope.drawAxes(color: Color, keys: List<T>) {
-    val startPoint = origin()
-
-    // X-axis
-    drawLine(
-        color = color,
-        start = startPoint,
-        end = Offset(size.width, startPoint.y)
-    )
-    // Y-axis
-    drawLine(
-        color = color,
-        start = startPoint,
-        end = Offset(0f, 0f)
-    )
-    drawIntoCanvas {
-        val valuePerGrid = mMaxVal / mMaxLen
-        val valTextPaint = Paint()
-        valTextPaint.textAlign = Paint.Align.RIGHT
-        valTextPaint.textSize = AXIS_VALUES_FONT_SIZE
-        valTextPaint.color = 0xff000000.toInt()
-        val keyTextPaint = Paint()
-        keyTextPaint.textAlign = Paint.Align.CENTER
-        keyTextPaint.textSize = AXIS_VALUES_FONT_SIZE
-        keyTextPaint.color = 0xff000000.toInt()
-
-        keys.forEachIndexed { i, key ->
-            val valOffset = Offset(
-                -20f,
-                (startPoint.y - (i + 1) * mVGap) + AXIS_VALUES_FONT_SIZE / 2
-            )
-            val keyOffset = Offset(
-                (i + 1) * mHGap,
-                startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
-            )
-
-            it.nativeCanvas.drawText(
-                (valuePerGrid * (i + 1)).toInt().toString(),
-                valOffset.x,
-                valOffset.y,
-                valTextPaint
-            )
-            it.nativeCanvas.drawText(
-                key.toString(),
-                keyOffset.x,
-                keyOffset.y,
-                keyTextPaint
-            )
         }
     }
 }
@@ -324,7 +217,7 @@ fun BarChartVerticalStackPreview() {
         yAxisName = "Y Axis",
         data = arrayListOf(
             BarSeries(
-                data = mutableListOf(
+                data = arrayListOf(
                     ChartData(1, 100f),
                     ChartData(2, 300f),
                     ChartData(3, 1100f),
@@ -337,7 +230,7 @@ fun BarChartVerticalStackPreview() {
                 legend = "Budget"
             ),
             BarSeries(
-                data = mutableListOf(
+                data = arrayListOf(
                     ChartData(1, 50f),
                     ChartData(2, 350f),
                     ChartData(3, 250f),

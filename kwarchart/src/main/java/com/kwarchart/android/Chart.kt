@@ -1,5 +1,6 @@
 package com.kwarchart.android
 
+import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,20 +9,29 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kwarchart.android.chart.*
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.Legend
+import com.kwarchart.android.util.ChartUtils
 
 private const val WEIGHT_CANVAS_AREA = 2f
 private const val WEIGHT_X_AXIS_NAME = 1f
+
+const val AXIS_VALUES_FONT_SIZE = 32f
 
 /**
  * Chart template.
  *
  * @param modifier Modifier.
+ * @param title Chart title.
  * @param xAxisName X-axis name.
  * @param yAxisName Y-axis name.
  * @param legend Legend to be displayed in the chart.
@@ -240,6 +250,126 @@ fun ChartCanvas(
             scaleY = -1f,
             block = block
         )
+    }
+}
+
+/**
+ * Canvas' origin point.
+ *
+ * @return Offset point.
+ */
+fun DrawScope.origin() = Offset(0f, size.height)
+
+/**
+ * Draw chart grids.
+ *
+ * @param count Grid count.
+ * @param color Grid color.
+ * @param showHorizontalLines Show/Hide horizontal lines.
+ * @param showVerticalLines Show/Hide vertical lines.
+ */
+fun DrawScope.drawGrids(
+    count: Int,
+    color: Color,
+    xAxisEndPadding: Float = 0f,
+    showHorizontalLines: Boolean = true,
+    showVerticalLines: Boolean = true,
+) {
+    val hGap = size.height / count
+    val vGap = size.width / (count + xAxisEndPadding)
+
+    val startPoint = origin()
+//    val pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f))
+
+    for (i in 1..count) {
+        if (showHorizontalLines) {
+            // Horizontal lines
+            drawLine(
+                color = color,
+                start = Offset(0f, startPoint.y - i * hGap),
+                end = Offset(size.width, startPoint.y - i * hGap),
+//            pathEffect = pathEffect
+            )
+        }
+
+        if (showVerticalLines) {
+            // Vertical lines
+            drawLine(
+                color = color,
+                start = Offset(i * vGap, 0f),
+                end = Offset(i * vGap, size.height),
+//            pathEffect = pathEffect
+            )
+        }
+    }
+}
+
+/**
+ * Draw X and Y axes.
+ *
+ * @param color Axes color.
+ * @param keys Keys to be plotted in the X-axis.
+ * @param maxVal Value axis' max value.
+ * @param maxLen Value axis' max length.
+ */
+fun <T> DrawScope.drawAxes(
+    color: Color,
+    keys: List<T>,
+    maxVal: Float,
+    maxLen: Int,
+    xAxisEndPadding: Float = 0f
+) {
+    val hGap = size.height / keys.size
+    val vGap = (size.width + xAxisEndPadding) / maxLen
+    val startPoint = origin()
+
+    // X-axis
+    drawLine(
+        color = color,
+        start = startPoint,
+        end = Offset(size.width, startPoint.y)
+    )
+    // Y-axis
+    drawLine(
+        color = color,
+        start = startPoint,
+        end = Offset(0f, 0f)
+    )
+
+    drawIntoCanvas {
+        val valTextPaint = Paint()
+        valTextPaint.textAlign = Paint.Align.RIGHT
+        valTextPaint.textSize = AXIS_VALUES_FONT_SIZE
+        valTextPaint.color = 0xff000000.toInt()
+
+        val keyTextPaint = Paint()
+        keyTextPaint.textAlign = Paint.Align.CENTER
+        keyTextPaint.textSize = AXIS_VALUES_FONT_SIZE
+        keyTextPaint.color = 0xff000000.toInt()
+
+        ChartUtils.getAxisValues(maxVal, maxLen).forEachIndexed { i, value ->
+            val valOffset = Offset(
+                -20f,
+                (startPoint.y - (i + 1) * hGap) + AXIS_VALUES_FONT_SIZE / 2
+            )
+            val keyOffset = Offset(
+                (i + 1) * vGap,
+                startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
+            )
+
+            it.nativeCanvas.drawText(
+                value.toInt().toString(),
+                valOffset.x,
+                valOffset.y,
+                valTextPaint
+            )
+            it.nativeCanvas.drawText(
+                keys[i].toString(),
+                keyOffset.x,
+                keyOffset.y,
+                keyTextPaint
+            )
+        }
     }
 }
 

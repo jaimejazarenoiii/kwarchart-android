@@ -25,9 +25,4 @@ data class BarSeries<T>(
      * Legend for the bar series.
      */
     val legend: String,
-
-//    /**
-//     * Bar style, Fill or stroke
-//     */
-//    val style: BarStyleType = BarStyleType.FILL
 )

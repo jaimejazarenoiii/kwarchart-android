@@ -1,5 +1,8 @@
 package com.kwarchart.android.util
 
+import androidx.compose.ui.geometry.Offset
+import com.kwarchart.android.model.ChartData
+
 object ChartUtils {
 
     /**
@@ -43,5 +46,27 @@ object ChartUtils {
 
         return res
     }
+
+    /**
+     * Get position of data point to be plotted in chart.
+     *
+     * @param index Data index.
+     * @param data Chart data.
+     * @param canvasHeight Canvas' height.
+     * @param xAxisGap X-axis pixel gap per data.
+     * @param yAxisMaxVal Y-axis max value based from list of data.
+     *
+     * @return Data point's position in canvas.
+     */
+    fun <T> getDataPoint(
+        index: Int,
+        data: ChartData<T>,
+        canvasHeight: Float,
+        xAxisGap: Float,
+        yAxisMaxVal: Float
+    ) = Offset(
+        (index + 1) * xAxisGap,
+        canvasHeight - ((data.value / yAxisMaxVal) * canvasHeight)
+    )
 
 }

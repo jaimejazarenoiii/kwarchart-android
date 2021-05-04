@@ -7,7 +7,7 @@
     tools:context=".ui.bar.BarFragment">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/chartBar"
+        android:id="@+id/chart_bar"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Add Data"
-        app:layout_constraintBottom_toTopOf="@+id/chartBar"
+        android:text="@string/add"
+        app:layout_constraintBottom_toTopOf="@+id/chart_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="72dp"
-        android:text="Number of data sources"
+        android:text="@string/number_of_data_sources"
         app:layout_constraintStart_toStartOf="@+id/spinner"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
