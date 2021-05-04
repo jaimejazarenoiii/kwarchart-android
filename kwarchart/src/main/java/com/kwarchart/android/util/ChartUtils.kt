@@ -49,6 +49,7 @@ object ChartUtils {
 
     /**
      * Get position of data point to be plotted in chart.
+     * Use this when the key is in X-axis.
      *
      * @param index Data index.
      * @param data Chart data.
@@ -67,6 +68,29 @@ object ChartUtils {
     ) = Offset(
         (index + 1) * xAxisGap,
         canvasHeight - ((data.value / yAxisMaxVal) * canvasHeight)
+    )
+
+    /**
+     * Get position of data point to be plotted in chart.
+     * Use this when the key is in Y-axis.
+     *
+     * @param index Data index.
+     * @param data Chart data.
+     * @param canvasWidth Canvas' width.
+     * @param yAxisGap Y-axis pixel gap per data.
+     * @param xAxisMaxVal X-axis max value based from list of data.
+     *
+     * @return Data point's position in canvas.
+     */
+    fun <T> getDataPoint2(
+        index: Int,
+        data: ChartData<T>,
+        canvasWidth: Float,
+        yAxisGap: Float,
+        xAxisMaxVal: Float
+    ) = Offset(
+        canvasWidth - ((data.value / xAxisMaxVal) * canvasWidth),
+        (index + 1) * yAxisGap,
     )
 
 }

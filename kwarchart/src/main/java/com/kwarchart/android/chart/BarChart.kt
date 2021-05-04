@@ -13,10 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kwarchart.android.AXIS_VALUES_FONT_SIZE
-import com.kwarchart.android.Chart
-import com.kwarchart.android.drawAxes
-import com.kwarchart.android.drawGrids
+import com.kwarchart.android.*
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.BarSeries
@@ -103,18 +100,29 @@ fun <T> BarChart(
                     bottom = AXIS_VALUES_FONT_SIZE.dp
                 )
         ) {
-            val xAxisEndPadding = ((data.size / 2) * data.first().width) + data.first().width
+            val axisEndPadding = ((data.size / 2) * data.first().width) + data.first().width
+            val isVBar = type == BarChartType.VERTICAL || type == BarChartType.VERTICAL_STACKED
+            val isHBar = type == BarChartType.HORIZONTAL || type == BarChartType.HORIZONTAL_STACKED
+            val xAxisEndPadding = if (isVBar) axisEndPadding else 0f
 
             if (showGrid) {
                 drawGrids(
                     maxLen,
                     gridsColor,
                     xAxisEndPadding = xAxisEndPadding,
-                    showVerticalLines = false
+                    showHorizontalLines = isVBar,
+                    showVerticalLines = isHBar
                 )
             }
             if (showAxes) {
-                drawAxes(axesColor, keys, maxVal, maxLen, xAxisEndPadding = xAxisEndPadding)
+                drawAxes(
+                    axesColor,
+                    keys,
+                    maxVal,
+                    maxLen,
+                    xAxisEndPadding = xAxisEndPadding,
+                    reverseKeyVal = isHBar
+                )
             }
 
             drawData(data, type, maxLen, maxVal, xAxisEndPadding)
@@ -129,26 +137,26 @@ fun <T> BarChart(
  * @param barChartType Type of bar to draw.
  * @param maxLen Max length of all passed data in BarChart.
  * @param maxVal Max value of all passed data in BarChart.
- * @param xAxisEndPadding X-axis end padding.
+ * @param axisEndPadding Axis end padding.
  */
 private fun <T> DrawScope.drawData(
     data: List<BarSeries<T>>,
     barChartType: BarChartType,
     maxLen: Int,
     maxVal: Float,
-    xAxisEndPadding: Float
+    axisEndPadding: Float
 ) {
     when (barChartType) {
-        BarChartType.VERTICAL -> drawVerticalBars(data, maxLen, maxVal, xAxisEndPadding)
+        BarChartType.VERTICAL -> drawVerticalBars(data, maxLen, maxVal, axisEndPadding)
 
         BarChartType.VERTICAL_STACKED -> drawVerticalStackedBars(
-            data, maxLen, maxVal, xAxisEndPadding
+            data, maxLen, maxVal, axisEndPadding
         )
 
-        BarChartType.HORIZONTAL -> drawHorizontalBars(data, maxLen, maxVal, xAxisEndPadding)
+        BarChartType.HORIZONTAL -> drawHorizontalBars(data, maxLen, maxVal, axisEndPadding)
 
         BarChartType.HORIZONTAL_STACKED -> drawHorizontalStackedBars(
-            data, maxLen, maxVal, xAxisEndPadding
+            data, maxLen, maxVal, axisEndPadding
         )
     }
 }
@@ -245,15 +253,43 @@ private fun <T> DrawScope.drawVerticalStackedBars(
  * @param data Data to be plotted in this chart.
  * @param maxLen Max length of all passed data in BarChart.
  * @param maxVal Max value of all passed data in BarChart.
- * @param xAxisEndPadding X-axis end padding.
+ * @param yAxisEndPadding Y-axis end padding.
  */
 private fun <T> DrawScope.drawHorizontalBars(
     data: List<BarSeries<T>>,
     maxLen: Int,
     maxVal: Float,
-    xAxisEndPadding: Float
+    yAxisEndPadding: Float
 ) {
-    TODO()
+    val startPoint = origin()
+    val halfDataSize = data.size / 2
+
+    data.forEachIndexed { i, barSeries ->
+        val hGap = (size.height - yAxisEndPadding) / maxLen
+
+        var deduct: Float
+
+        if (data.size % 2 == 0) {
+            deduct = (i - halfDataSize) * barSeries.width
+        } else {
+            if (i == halfDataSize) {
+                deduct = -barSeries.width / 2
+            } else {
+                deduct = (i - halfDataSize) * barSeries.width
+                deduct -= barSeries.width / 2
+            }
+        }
+
+        barSeries.data.forEachIndexed { j, chartData ->
+            val point = ChartUtils.getDataPoint2(j, chartData, size.width, hGap, maxVal)
+
+            drawRect(
+                topLeft = Offset(1f, startPoint.y - point.y + deduct),
+                size = Size(size.width - point.x, barSeries.width),
+                color = barSeries.color
+            )
+        }
+    }
 }
 
 /**
@@ -262,15 +298,41 @@ private fun <T> DrawScope.drawHorizontalBars(
  * @param data Data to be plotted in this chart.
  * @param maxLen Max length of all passed data in BarChart.
  * @param maxVal Max value of all passed data in BarChart.
- * @param xAxisEndPadding X-axis end padding.
+ * @param yAxisEndPadding Y-axis end padding.
  */
 private fun <T> DrawScope.drawHorizontalStackedBars(
     data: List<BarSeries<T>>,
     maxLen: Int,
     maxVal: Float,
-    xAxisEndPadding: Float
+    yAxisEndPadding: Float
 ) {
-    TODO()
+    val startPoint = origin()
+    val prevWidths = arrayListOf<Float>()
+
+    data.forEachIndexed { i, barSeries ->
+        val hGap = (size.height - yAxisEndPadding) / maxLen
+        val deduct = -barSeries.width / 2
+
+        barSeries.data.forEachIndexed { j, chartData ->
+            val point = ChartUtils.getDataPoint2(j, chartData, size.width, hGap, maxVal)
+            val barSize = Size(size.width - point.x, barSeries.width)
+
+            var xOffset = 0f
+
+            if (i > 0) {
+                xOffset = prevWidths[j]
+                prevWidths[j] = barSize.width
+            } else {
+                prevWidths.add(barSize.width)
+            }
+
+            drawRect(
+                topLeft = Offset(1f + xOffset, startPoint.y - point.y + deduct),
+                size = barSize,
+                color = barSeries.color
+            )
+        }
+    }
 }
 
 @Preview
@@ -339,5 +401,75 @@ fun BarChartVerticalStackPreview() {
             )
         ),
         type = BarChartType.VERTICAL_STACKED
+    )
+}
+
+@Preview
+@Composable
+fun BarChartHorizontalPreview() {
+    BarChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            BarSeries(
+                data = arrayListOf(
+                    ChartData(1, 100f),
+                    ChartData(2, 300f),
+                    ChartData(3, 1100f),
+                    ChartData(4, 200f),
+                    ChartData(5, 850f),
+                    ChartData(6, 400f),
+                    ChartData(7, 610f)
+                ),
+                color = Color.Green,
+                legend = "Budget"
+            )
+        ),
+        type = BarChartType.HORIZONTAL
+    )
+}
+
+@Preview
+@Composable
+fun BarChartHorizontalStackPreview() {
+    BarChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(color = Color.White),
+        xAxisName = "X Axis",
+        yAxisName = "Y Axis",
+        data = arrayListOf(
+            BarSeries(
+                data = arrayListOf(
+                    ChartData(1, 100f),
+                    ChartData(2, 300f),
+                    ChartData(3, 1100f),
+                    ChartData(4, 200f),
+                    ChartData(5, 850f),
+                    ChartData(6, 400f),
+                    ChartData(7, 610f)
+                ),
+                color = Color.Green,
+                legend = "Budget"
+            ),
+            BarSeries(
+                data = arrayListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                    ChartData(6, 500f),
+                    ChartData(7, 600f)
+                ),
+                legend = "Spent"
+            )
+        ),
+        type = BarChartType.HORIZONTAL_STACKED
     )
 }

@@ -95,4 +95,32 @@ class ChartUtilsUnitTest {
         assertNotEquals(410.625f, offset.y)
     }
 
+    @Test
+    fun getDataPoint2_isCorrect() {
+        val offset = ChartUtils.getDataPoint2(
+            0,
+            ChartData(1, 50f),
+            942f,
+            46.57143f,
+            800f
+        )
+
+        assertEquals(883.125f, offset.x)
+        assertEquals(46.57143f, offset.y)
+    }
+
+    @Test
+    fun getDataPoint2_isWrong() {
+        val offset = ChartUtils.getDataPoint2(
+            1,
+            ChartData(1, 50f),
+            842f,
+            46.57143f,
+            800f
+        )
+
+        assertNotEquals(883.125f, offset.x)
+        assertNotEquals(46.57143f, offset.y)
+    }
+
 }

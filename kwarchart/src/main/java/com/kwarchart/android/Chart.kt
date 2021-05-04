@@ -273,12 +273,12 @@ fun DrawScope.drawGrids(
     count: Int,
     color: Color,
     xAxisEndPadding: Float = 0f,
+    yAxisEndPadding: Float = 0f,
     showHorizontalLines: Boolean = true,
     showVerticalLines: Boolean = true,
 ) {
-    val hGap = size.height / count
+    val hGap = (size.height - yAxisEndPadding) / count
     val vGap = (size.width - xAxisEndPadding) / count
-
     val startPoint = origin()
 //    val pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f))
 
@@ -319,9 +319,11 @@ fun <T> DrawScope.drawAxes(
     keys: List<T>,
     maxVal: Float,
     maxLen: Int,
-    xAxisEndPadding: Float = 0f
+    xAxisEndPadding: Float = 0f,
+    yAxisEndPadding: Float = 0f,
+    reverseKeyVal: Boolean = false
 ) {
-    val hGap = size.height / keys.size
+    val hGap = (size.height - yAxisEndPadding) / keys.size
     val vGap = (size.width - xAxisEndPadding) / maxLen
     val startPoint = origin()
 
@@ -339,37 +341,37 @@ fun <T> DrawScope.drawAxes(
     )
 
     drawIntoCanvas {
-        val valTextPaint = Paint()
-        valTextPaint.textAlign = Paint.Align.RIGHT
-        valTextPaint.textSize = AXIS_VALUES_FONT_SIZE
-        valTextPaint.color = 0xff000000.toInt()
+        val yTextPaint = Paint()
+        yTextPaint.textAlign = Paint.Align.RIGHT
+        yTextPaint.textSize = AXIS_VALUES_FONT_SIZE
+        yTextPaint.color = 0xff000000.toInt()
 
-        val keyTextPaint = Paint()
-        keyTextPaint.textAlign = Paint.Align.CENTER
-        keyTextPaint.textSize = AXIS_VALUES_FONT_SIZE
-        keyTextPaint.color = 0xff000000.toInt()
+        val xTextPaint = Paint()
+        xTextPaint.textAlign = Paint.Align.CENTER
+        xTextPaint.textSize = AXIS_VALUES_FONT_SIZE
+        xTextPaint.color = 0xff000000.toInt()
 
         ChartUtils.getAxisValues(maxVal, maxLen).forEachIndexed { i, value ->
-            val valOffset = Offset(
+            val yOffset = Offset(
                 -20f,
                 (startPoint.y - (i + 1) * hGap) + AXIS_VALUES_FONT_SIZE / 2
             )
-            val keyOffset = Offset(
+            val xOffset = Offset(
                 (i + 1) * vGap,
                 startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
             )
 
             it.nativeCanvas.drawText(
-                value.toInt().toString(),
-                valOffset.x,
-                valOffset.y,
-                valTextPaint
+                if (reverseKeyVal) keys[i].toString() else value.toInt().toString(),
+                yOffset.x,
+                yOffset.y,
+                yTextPaint
             )
             it.nativeCanvas.drawText(
-                keys[i].toString(),
-                keyOffset.x,
-                keyOffset.y,
-                keyTextPaint
+                if (reverseKeyVal) value.toInt().toString() else keys[i].toString(),
+                xOffset.x,
+                xOffset.y,
+                xTextPaint
             )
         }
     }
