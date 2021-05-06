@@ -341,15 +341,8 @@ fun <T> DrawScope.drawAxes(
     )
 
     drawIntoCanvas {
-        val yTextPaint = Paint()
-        yTextPaint.textAlign = Paint.Align.RIGHT
-        yTextPaint.textSize = AXIS_VALUES_FONT_SIZE
-        yTextPaint.color = 0xff000000.toInt()
-
-        val xTextPaint = Paint()
-        xTextPaint.textAlign = Paint.Align.CENTER
-        xTextPaint.textSize = AXIS_VALUES_FONT_SIZE
-        xTextPaint.color = 0xff000000.toInt()
+        val yTextPaint = createAxisTextPaint(textAlign = Paint.Align.RIGHT)
+        val xTextPaint = createAxisTextPaint()
 
         ChartUtils.getAxisValues(maxVal, maxLen).forEachIndexed { i, value ->
             val yOffset = Offset(
@@ -375,6 +368,23 @@ fun <T> DrawScope.drawAxes(
             )
         }
     }
+}
+
+/**
+ * Create a paint for drawing text.
+ *
+ * @param textAlign Text alignment.
+ * @param textSize Text size.
+ * @param color Text color.
+ */
+private fun createAxisTextPaint(
+    textAlign: Paint.Align = Paint.Align.CENTER,
+    textSize: Float = AXIS_VALUES_FONT_SIZE,
+    color: Int = 0xff000000.toInt()
+) = Paint().apply{
+    this.textAlign = textAlign
+    this.textSize = textSize
+    this.color = color
 }
 
 @Preview
