@@ -1,5 +1,6 @@
 package com.kwarchart.android.util
 
+import com.kwarchart.android.model.ChartData
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -64,6 +65,62 @@ class ChartUtilsUnitTest {
         axisValues.forEachIndexed { i, value ->
             assertNotEquals(unexpectedValues[i], value)
         }
+    }
+
+    @Test
+    fun getDataPoint_isCorrect() {
+        val offset = ChartUtils.getDataPoint(
+            0,
+            ChartData(1, 50f),
+            438f,
+            116.71429f,
+            800f
+        )
+
+        assertEquals(116.71429f, offset.x)
+        assertEquals(410.625f, offset.y)
+    }
+
+    @Test
+    fun getDataPoint_isWrong() {
+        val offset = ChartUtils.getDataPoint(
+            1,
+            ChartData(1, 50f),
+            538f,
+            116.71429f,
+            800f
+        )
+
+        assertNotEquals(116.71429f, offset.x)
+        assertNotEquals(410.625f, offset.y)
+    }
+
+    @Test
+    fun getDataPoint2_isCorrect() {
+        val offset = ChartUtils.getDataPoint2(
+            0,
+            ChartData(1, 50f),
+            942f,
+            46.57143f,
+            800f
+        )
+
+        assertEquals(883.125f, offset.x)
+        assertEquals(46.57143f, offset.y)
+    }
+
+    @Test
+    fun getDataPoint2_isWrong() {
+        val offset = ChartUtils.getDataPoint2(
+            1,
+            ChartData(1, 50f),
+            842f,
+            46.57143f,
+            800f
+        )
+
+        assertNotEquals(883.125f, offset.x)
+        assertNotEquals(46.57143f, offset.y)
     }
 
 }
