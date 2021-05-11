@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.LineChart
+import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentLineBinding
 
 class LineFragment : Fragment() {
@@ -40,7 +42,7 @@ class LineFragment : Fragment() {
         }
 
         val lineChart: ComposeView = binding.chartLine
-        lineViewModel.chartData.observe(viewLifecycleOwner, Observer {
+        lineViewModel.spentSeries.observe(viewLifecycleOwner, Observer {
             lineChart.apply {
                 setContent {
                     LineChart(
@@ -48,11 +50,14 @@ class LineFragment : Fragment() {
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .background(color = Color.White),
-                        legendX = "Date",
-                        legendY = "Savings",
-                        chartData = it,
-                        lineColor = Color.Red,
-                        isSpline = true
+                        data = arrayListOf(
+                            lineViewModel.spentSeries.value!!,
+                            lineViewModel.goalSeries
+                        ),
+                        title = resources.getString(R.string.title_line_chart),
+                        yAxisName = resources.getString(R.string.y_axis_line_chart),
+                        xAxisName = resources.getString(R.string.x_axis_line_chart),
+                        legendPos = LegendPosition.TOP_RIGHT
                     )
                 }
             }

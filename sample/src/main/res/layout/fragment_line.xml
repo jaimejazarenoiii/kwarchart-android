@@ -7,9 +7,9 @@
     tools:context=".ui.line.LineFragment">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/chartLine"
+        android:id="@+id/chart_line"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,8 +19,8 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
-        app:layout_constraintBottom_toTopOf="@+id/chartLine"
+        android:text="@string/add"
+        app:layout_constraintBottom_toTopOf="@+id/chart_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

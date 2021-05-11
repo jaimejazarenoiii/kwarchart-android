@@ -4,4 +4,9 @@
     <string name="title_bar">Bar</string>
     <string name="title_pie">Pie</string>
     <string name="add">Add</string>
+    <string name="title_line_chart">This week\'s transactions</string>
+    <string name="x_axis_line_chart">Day</string>
+    <string name="y_axis_line_chart">Spent</string>
+    <string name="title_pie_chart">This month\'s transactions</string>
+    <string name="number_of_data_sources">Number of data sources</string>
 </resources>
