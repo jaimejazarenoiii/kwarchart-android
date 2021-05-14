@@ -29,4 +29,4 @@ A chart API using Android Jetpack Compose.
    | DOUGHNUT | <img src="images/pie_doughnut.png" width="300"> |
 
 # Installation
-https://jitpack.io/#jaimejazarenoiii/kwarchart-android
+implementation 'com.github.jaimejazarenoiii:kwarchart-android:0.1.0-alpha.1'
