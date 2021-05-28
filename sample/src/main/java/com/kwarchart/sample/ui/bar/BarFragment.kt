@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.BarChart
@@ -39,8 +40,8 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
         barViewModel = ViewModelProvider(this).get(BarViewModel::class.java)
         _binding = FragmentBarBinding.inflate(inflater, container, false)
         barViewModel.init(
-            Color(resources.getColor(R.color.red)),
-            Color(resources.getColor(R.color.green))
+            Color(ResourcesCompat.getColor(resources, R.color.red, null)),
+            Color(ResourcesCompat.getColor(resources, R.color.green, null))
         )
 
         val root: View = binding.root
@@ -82,11 +83,11 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         },
                         axesStyle = AxesStyle(
                             xStyle = Style(
-                                color = Color(resources.getColor(R.color.gray)),
+                                color = Color(ResourcesCompat.getColor(resources, R.color.gray, null)),
                                 strokeWidth = 10f
                             ),
                             yStyle = Style(
-                                color = Color(resources.getColor(R.color.gray)),
+                                color = Color(ResourcesCompat.getColor(resources, R.color.gray, null)),
                                 strokeWidth = 10f
                             ),
                             xValueFontStyle = FontStyle(

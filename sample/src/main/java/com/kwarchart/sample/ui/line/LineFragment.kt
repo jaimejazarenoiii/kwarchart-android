@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -38,8 +39,8 @@ class LineFragment : Fragment() {
         lineViewModel = ViewModelProvider(this).get(LineViewModel::class.java)
         _binding = FragmentLineBinding.inflate(inflater, container, false)
         lineViewModel.init(
-            Color(resources.getColor(R.color.red)),
-            Color(resources.getColor(R.color.green))
+            Color(ResourcesCompat.getColor(resources, R.color.red, null)),
+            Color(ResourcesCompat.getColor(resources, R.color.green, null))
         )
 
         val root: View = binding.root
@@ -65,11 +66,11 @@ class LineFragment : Fragment() {
                         title = resources.getString(R.string.title_line_chart),
                         axesStyle = AxesStyle(
                             xStyle = Style(
-                                color = Color(resources.getColor(R.color.gray)),
+                                color = Color(ResourcesCompat.getColor(resources, R.color.gray, null)),
                                 strokeWidth = 10f
                             ),
                             yStyle = Style(
-                                color = Color(resources.getColor(R.color.gray)),
+                                color = Color(ResourcesCompat.getColor(resources, R.color.gray, null)),
                                 strokeWidth = 10f
                             ),
                             xValueFontStyle = FontStyle(
