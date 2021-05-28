@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.LineChart
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
+import com.kwarchart.android.model.GridsStyle
 import com.kwarchart.android.model.Style
 import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentLineBinding
@@ -66,6 +67,16 @@ class LineFragment : Fragment() {
                             yStyle = Style(
                                 color = Color(0xffe4eaef),
                                 strokeWidth = 10f
+                            )
+                        ),
+                        gridsStyle = GridsStyle(
+                            horizontal = Style(
+                                color = Color(0xffe5ebef),
+                                strokeStyle = PathEffect.dashPathEffect(intervals = floatArrayOf(5f, 5f))
+                            ),
+                            vertical = Style(
+                                color = Color(0xffe5ebef),
+                                strokeStyle = PathEffect.dashPathEffect(intervals = floatArrayOf(5f, 5f))
                             )
                         ),
                         legendPos = LegendPosition.TOP_RIGHT

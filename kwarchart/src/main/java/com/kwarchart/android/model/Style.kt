@@ -16,3 +16,8 @@ data class AxesStyle(
     val xStyle: Style = Style(),
     val yStyle: Style = Style()
 )
+
+data class GridsStyle(
+    val horizontal: Style = Style(),
+    val vertical: Style = Style()
+)
