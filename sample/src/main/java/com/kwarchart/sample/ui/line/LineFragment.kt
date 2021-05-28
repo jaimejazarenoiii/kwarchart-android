@@ -38,8 +38,8 @@ class LineFragment : Fragment() {
         lineViewModel = ViewModelProvider(this).get(LineViewModel::class.java)
         _binding = FragmentLineBinding.inflate(inflater, container, false)
         lineViewModel.init(
-            Color(resources.getColor(R.color.red, null)),
-            Color(resources.getColor(R.color.green, null))
+            Color(resources.getColor(R.color.red)),
+            Color(resources.getColor(R.color.green))
         )
 
         val root: View = binding.root
@@ -65,11 +65,11 @@ class LineFragment : Fragment() {
                         title = resources.getString(R.string.title_line_chart),
                         axesStyle = AxesStyle(
                             xStyle = Style(
-                                color = Color(resources.getColor(R.color.gray, null)),
+                                color = Color(resources.getColor(R.color.gray)),
                                 strokeWidth = 10f
                             ),
                             yStyle = Style(
-                                color = Color(resources.getColor(R.color.gray, null)),
+                                color = Color(resources.getColor(R.color.gray)),
                                 strokeWidth = 10f
                             ),
                             xValueFontStyle = FontStyle(

@@ -39,8 +39,8 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
         barViewModel = ViewModelProvider(this).get(BarViewModel::class.java)
         _binding = FragmentBarBinding.inflate(inflater, container, false)
         barViewModel.init(
-            Color(resources.getColor(R.color.red, null)),
-            Color(resources.getColor(R.color.green, null))
+            Color(resources.getColor(R.color.red)),
+            Color(resources.getColor(R.color.green))
         )
 
         val root: View = binding.root
@@ -82,11 +82,11 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         },
                         axesStyle = AxesStyle(
                             xStyle = Style(
-                                color = Color(resources.getColor(R.color.gray, null)),
+                                color = Color(resources.getColor(R.color.gray)),
                                 strokeWidth = 10f
                             ),
                             yStyle = Style(
-                                color = Color(resources.getColor(R.color.gray, null)),
+                                color = Color(resources.getColor(R.color.gray)),
                                 strokeWidth = 10f
                             ),
                             xValueFontStyle = FontStyle(
