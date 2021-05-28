@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.BarChart
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
+import com.kwarchart.android.model.FontStyle
 import com.kwarchart.android.model.Style
 import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentBarBinding
@@ -86,6 +88,10 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             yStyle = Style(
                                 color = Color(resources.getColor(R.color.gray, null)),
                                 strokeWidth = 10f
+                            ),
+                            xValueFontStyle = FontStyle(
+                                size = 40f,
+                                weight = FontWeight.Bold
                             )
                         ),
                     )
