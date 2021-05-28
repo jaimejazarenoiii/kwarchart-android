@@ -32,6 +32,7 @@ class BarViewModel : ViewModel() {
             ChartData(6, 500f),
             ChartData(7, 600f)
         ),
+        color = Color(0xffe26767),
         legend = "Spent"
     )
 
@@ -48,7 +49,7 @@ class BarViewModel : ViewModel() {
             ChartData(6, 500f),
             ChartData(7, 610f)
         ),
-        color = Color.Green,
+        color = Color(0xff0ebca7),
         legend = "Budget"
     )
 

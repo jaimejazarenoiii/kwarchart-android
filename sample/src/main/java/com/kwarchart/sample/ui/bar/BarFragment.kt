@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.BarChart
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.android.model.AxesStyle
+import com.kwarchart.android.model.Style
 import com.kwarchart.sample.databinding.FragmentBarBinding
 
 class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -61,8 +63,8 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             arrayListOf(barViewModel.spentSeries)
                         } else {
                             arrayListOf(
-                                barViewModel.goalSeries,
-                                barViewModel.spentSeries
+                                barViewModel.spentSeries,
+                                barViewModel.goalSeries
                             )
                         },
                         legendPos = LegendPosition.TOP_RIGHT,
@@ -71,6 +73,16 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         } else {
                             BarChartType.VERTICAL_STACKED
                         },
+                        axesStyle = AxesStyle(
+                            xStyle = Style(
+                                color = Color(0xffe4eaef),
+                                strokeWidth = 10f
+                            ),
+                            yStyle = Style(
+                                color = Color(0xffe4eaef),
+                                strokeWidth = 10f
+                            )
+                        ),
                     )
                 }
             }

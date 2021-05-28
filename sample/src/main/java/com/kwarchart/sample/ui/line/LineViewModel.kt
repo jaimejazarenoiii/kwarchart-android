@@ -26,6 +26,7 @@ class LineViewModel : ViewModel() {
                 ChartData(7, 600f)
             ),
             type = LineChartType.SMOOTH,
+            color = Color(0xffe26767),
             showDataPoint = true,
             legend = "Spent"
         )
@@ -44,7 +45,7 @@ class LineViewModel : ViewModel() {
             ChartData(6, 500f),
             ChartData(7, 610f)
         ),
-        color = Color.Green,
+        color = Color(0xff0ebca7),
         legend = "Budget"
     )
 

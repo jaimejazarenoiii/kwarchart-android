@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kwarchart.android.chart.LineChart
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.android.model.AxesStyle
+import com.kwarchart.android.model.Style
 import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentLineBinding
 
@@ -55,8 +58,16 @@ class LineFragment : Fragment() {
                             lineViewModel.goalSeries
                         ),
                         title = resources.getString(R.string.title_line_chart),
-                        yAxisName = resources.getString(R.string.y_axis_line_chart),
-                        xAxisName = resources.getString(R.string.x_axis_line_chart),
+                        axesStyle = AxesStyle(
+                            xStyle = Style(
+                                color = Color(0xffe4eaef),
+                                strokeWidth = 10f
+                            ),
+                            yStyle = Style(
+                                color = Color(0xffe4eaef),
+                                strokeWidth = 10f
+                            )
+                        ),
                         legendPos = LegendPosition.TOP_RIGHT
                     )
                 }

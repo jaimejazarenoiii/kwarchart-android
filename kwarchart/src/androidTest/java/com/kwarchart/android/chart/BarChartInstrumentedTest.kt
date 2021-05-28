@@ -11,6 +11,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
 import org.junit.Rule
@@ -61,11 +62,13 @@ class BarChartInstrumentedTest {
                     .width(300.dp)
                     .height(300.dp)
                     .background(color = Color.White),
-                xAxisName = "Day",
-                yAxisName = "Spent",
                 title = "This week's transactions",
                 data = mOneBarSeries,
                 type = BarChartType.VERTICAL,
+                axesStyle = AxesStyle(
+                    xName = "Day",
+                    yName = "Spent",
+                )
             )
         }
 
@@ -89,8 +92,10 @@ class BarChartInstrumentedTest {
                     .fillMaxWidth()
                     .height(300.dp),
                 data = mOneBarSeries,
-                yAxisName = "Spent",
-                xAxisName = "Day"
+                axesStyle = AxesStyle(
+                    xName = "Day",
+                    yName = "Spent",
+                )
             )
         }
 

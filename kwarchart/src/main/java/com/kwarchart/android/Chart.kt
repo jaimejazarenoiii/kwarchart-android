@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.chart.*
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.Legend
 import com.kwarchart.android.util.ChartUtils
 
@@ -32,8 +34,7 @@ const val AXIS_VALUES_FONT_SIZE = 32f
  *
  * @param modifier Modifier.
  * @param title Chart title.
- * @param xAxisName X-axis name.
- * @param yAxisName Y-axis name.
+ * @param axesStyle X and Y axes style.
  * @param legend Legend to be displayed in the chart.
  * @param content Chart's children.
  */
@@ -41,8 +42,7 @@ const val AXIS_VALUES_FONT_SIZE = 32f
 fun Chart(
     modifier: Modifier = Modifier,
     title: String? = null,
-    xAxisName: String? = null,
-    yAxisName: String? = null,
+    axesStyle: AxesStyle = AxesStyle(),
     legend: Legend? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -62,7 +62,7 @@ fun Chart(
         ) {
             if (legend != null) LeftLegends(legend)
 
-            yAxisName?.let {
+            axesStyle.yName?.let {
                 Text(
                     text = it,
                     modifier = Modifier.padding(start = 10.dp)
@@ -74,7 +74,7 @@ fun Chart(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
-                xAxisName?.let {
+                axesStyle.xName?.let {
                     Text(
                         text = it,
                         modifier = Modifier
@@ -315,7 +315,7 @@ fun DrawScope.drawGrids(
  * @param xAxisEndPadding X-axis end padding.
  */
 fun <T> DrawScope.drawAxes(
-    color: Color,
+    axesStyle: AxesStyle,
     keys: List<T>,
     maxVal: Float,
     maxLen: Int,
@@ -328,44 +328,62 @@ fun <T> DrawScope.drawAxes(
     val startPoint = origin()
 
     // X-axis
-    drawLine(
-        color = color,
-        start = startPoint,
-        end = Offset(size.width, startPoint.y)
-    )
+    if (axesStyle.xStyle.show) {
+        drawLine(
+            strokeWidth = axesStyle.xStyle.strokeWidth,
+            color = axesStyle.xStyle.color,
+            start = startPoint,
+            end = Offset(size.width, startPoint.y),
+            cap = StrokeCap.Square,
+            pathEffect = axesStyle.xStyle.strokeStyle
+        )
+    }
     // Y-axis
-    drawLine(
-        color = color,
-        start = startPoint,
-        end = Offset(0f, 0f)
-    )
+    if (axesStyle.yStyle.show) {
+        drawLine(
+            strokeWidth = axesStyle.yStyle.strokeWidth,
+            color = axesStyle.yStyle.color,
+            start = startPoint,
+            end = Offset(0f, 0f),
+            cap = StrokeCap.Square,
+            pathEffect = axesStyle.yStyle.strokeStyle
+        )
+    }
+
+    if (!axesStyle.xStyle.show && !axesStyle.yStyle.show) {
+        return
+    }
 
     drawIntoCanvas {
         val yTextPaint = createAxisTextPaint(textAlign = Paint.Align.RIGHT)
         val xTextPaint = createAxisTextPaint()
 
         ChartUtils.getAxisValues(maxVal, maxLen).forEachIndexed { i, value ->
-            val yOffset = Offset(
-                -20f,
-                (startPoint.y - (i + 1) * hGap) + AXIS_VALUES_FONT_SIZE / 2
-            )
-            val xOffset = Offset(
-                (i + 1) * vGap,
-                startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
-            )
+            if (axesStyle.xStyle.show) {
+                val xOffset = Offset(
+                    (i + 1) * vGap,
+                    startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
+                )
+                it.nativeCanvas.drawText(
+                    if (reverseKeyVal) value.toInt().toString() else keys[i].toString(),
+                    xOffset.x,
+                    xOffset.y,
+                    xTextPaint
+                )
+            }
 
-            it.nativeCanvas.drawText(
-                if (reverseKeyVal) keys[i].toString() else value.toInt().toString(),
-                yOffset.x,
-                yOffset.y,
-                yTextPaint
-            )
-            it.nativeCanvas.drawText(
-                if (reverseKeyVal) value.toInt().toString() else keys[i].toString(),
-                xOffset.x,
-                xOffset.y,
-                xTextPaint
-            )
+            if (axesStyle.yStyle.show) {
+                val yOffset = Offset(
+                    -20f,
+                    (startPoint.y - (i + 1) * hGap) + AXIS_VALUES_FONT_SIZE / 2
+                )
+                it.nativeCanvas.drawText(
+                    if (reverseKeyVal) keys[i].toString() else value.toInt().toString(),
+                    yOffset.x,
+                    yOffset.y,
+                    yTextPaint
+                )
+            }
         }
     }
 }
@@ -381,7 +399,7 @@ private fun createAxisTextPaint(
     textAlign: Paint.Align = Paint.Align.CENTER,
     textSize: Float = AXIS_VALUES_FONT_SIZE,
     color: Int = 0xff000000.toInt()
-) = Paint().apply{
+) = Paint(Paint.ANTI_ALIAS_FLAG).apply{
     this.textAlign = textAlign
     this.textSize = textSize
     this.color = color
@@ -391,7 +409,9 @@ private fun createAxisTextPaint(
 @Composable
 fun ChartPreview() {
     Chart(
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis"
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis"
+        )
     ) {}
 }

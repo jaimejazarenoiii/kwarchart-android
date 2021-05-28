@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.*
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.enum.LineChartType
+import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.LineSeries
@@ -27,24 +28,17 @@ private const val WEIGHT_LINE_CHART_CANVAS = 5f
  * @param modifier Modifier.
  * @param data List of LineSeries which will be plotted in this chart.
  * @param title Chart title.
- * @param xAxisName X-axis name.
- * @param yAxisName Y-axis name.
- * @param axesColor X and Y axes color
- * @param showAxes Displayed state of axes.
+ * @param axesStyle X and Y axes style.
  * @param gridsColor Grids color.
  * @param showGrid Displayed state of grids.
  * @param legendPos Legend position.
  */
-
 @Composable
 fun <T> LineChart(
     modifier: Modifier = Modifier,
     data: List<LineSeries<T>>,
     title: String? = null,
-    xAxisName: String? = null,
-    yAxisName: String? = null,
-    axesColor: Color = Color.Gray,
-    showAxes: Boolean = true,
+    axesStyle: AxesStyle = AxesStyle(),
     gridsColor: Color = Color.Gray,
     showGrid: Boolean = true,
     legendPos: LegendPosition? = null
@@ -73,8 +67,7 @@ fun <T> LineChart(
     Chart(
         modifier = modifier,
         title = title,
-        xAxisName = xAxisName,
-        yAxisName = yAxisName,
+        axesStyle = axesStyle,
         legend = legendPos?.let { _ ->
             val tmpLegend = Legend(legendPos)
             data.forEach {
@@ -97,12 +90,12 @@ fun <T> LineChart(
             if (showGrid) {
                 drawGrids(maxLen, gridsColor)
             }
-            if (showAxes) {
-                drawAxes(axesColor, keys, maxVal, maxLen)
-            }
+
             data.forEach {
                 drawData(it, maxLen, maxVal)
             }
+
+            drawAxes(axesStyle, keys, maxVal, maxLen)
         }
     }
 }
@@ -201,8 +194,10 @@ fun LineChartNormalPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis",
+        ),
         data = arrayListOf(
             LineSeries(
                 data = arrayListOf(
@@ -226,8 +221,10 @@ fun LineChartSmoothPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+      axesStyle = AxesStyle(
+          xName = "X Axis",
+          yName = "Y Axis",
+      ),
         data = arrayListOf(
             LineSeries(
                 data = arrayListOf(
@@ -252,8 +249,10 @@ fun LineChartAreaPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis",
+        ),
         data = arrayListOf(
             LineSeries(
                 data = arrayListOf(
