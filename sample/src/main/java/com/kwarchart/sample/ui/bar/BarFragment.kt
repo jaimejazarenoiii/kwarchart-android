@@ -20,6 +20,7 @@ import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.Style
+import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentBarBinding
 
 class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -35,6 +36,10 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
     ): View {
         barViewModel = ViewModelProvider(this).get(BarViewModel::class.java)
         _binding = FragmentBarBinding.inflate(inflater, container, false)
+        barViewModel.init(
+            Color(resources.getColor(R.color.red, null)),
+            Color(resources.getColor(R.color.green, null))
+        )
 
         val root: View = binding.root
 
@@ -75,11 +80,11 @@ class BarFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         },
                         axesStyle = AxesStyle(
                             xStyle = Style(
-                                color = Color(0xffe4eaef),
+                                color = Color(resources.getColor(R.color.gray, null)),
                                 strokeWidth = 10f
                             ),
                             yStyle = Style(
-                                color = Color(0xffe4eaef),
+                                color = Color(resources.getColor(R.color.gray, null)),
                                 strokeWidth = 10f
                             )
                         ),

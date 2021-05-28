@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -36,6 +35,10 @@ class LineFragment : Fragment() {
     ): View? {
         lineViewModel = ViewModelProvider(this).get(LineViewModel::class.java)
         _binding = FragmentLineBinding.inflate(inflater, container, false)
+        lineViewModel.init(
+            Color(resources.getColor(R.color.red, null)),
+            Color(resources.getColor(R.color.green, null))
+        )
 
         val root: View = binding.root
 
@@ -60,11 +63,11 @@ class LineFragment : Fragment() {
                         title = resources.getString(R.string.title_line_chart),
                         axesStyle = AxesStyle(
                             xStyle = Style(
-                                color = Color(0xffe4eaef),
+                                color = Color(resources.getColor(R.color.gray, null)),
                                 strokeWidth = 10f
                             ),
                             yStyle = Style(
-                                color = Color(0xffe4eaef),
+                                color = Color(resources.getColor(R.color.gray, null)),
                                 strokeWidth = 10f
                             )
                         ),
