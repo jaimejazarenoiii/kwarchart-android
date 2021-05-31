@@ -15,19 +15,20 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.chart.*
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
+import com.kwarchart.android.model.FontStyle
 import com.kwarchart.android.model.GridsStyle
 import com.kwarchart.android.model.Legend
 import com.kwarchart.android.util.ChartUtils
 
 private const val WEIGHT_CANVAS_AREA = 2f
 private const val WEIGHT_X_AXIS_NAME = 1f
-
-const val AXIS_VALUES_FONT_SIZE = 32f
 
 /**
  * Chart template.
@@ -359,14 +360,16 @@ fun <T> DrawScope.drawAxes(
     }
 
     drawIntoCanvas {
-        val yTextPaint = createAxisTextPaint(textAlign = Paint.Align.RIGHT)
-        val xTextPaint = createAxisTextPaint()
+        val xTextPaint = createAxisTextPaint(axesStyle.xValueFontStyle)
+        val yTextPaint = createAxisTextPaint(
+            axesStyle.yValueFontStyle, Paint.Align.RIGHT
+        )
 
         ChartUtils.getAxisValues(maxVal, maxLen).forEachIndexed { i, value ->
             if (axesStyle.xStyle.show) {
                 val xOffset = Offset(
                     (i + 1) * vGap,
-                    startPoint.y + AXIS_VALUES_FONT_SIZE + 10f
+                    startPoint.y + axesStyle.xValueFontStyle.size + 10f
                 )
                 it.nativeCanvas.drawText(
                     if (reverseKeyVal) value.toInt().toString() else keys[i].toString(),
@@ -379,7 +382,7 @@ fun <T> DrawScope.drawAxes(
             if (axesStyle.yStyle.show) {
                 val yOffset = Offset(
                     -20f,
-                    (startPoint.y - (i + 1) * hGap) + AXIS_VALUES_FONT_SIZE / 2
+                    (startPoint.y - (i + 1) * hGap) + axesStyle.yValueFontStyle.size / 2
                 )
                 it.nativeCanvas.drawText(
                     if (reverseKeyVal) keys[i].toString() else value.toInt().toString(),
@@ -395,18 +398,17 @@ fun <T> DrawScope.drawAxes(
 /**
  * Create a paint for drawing text.
  *
+ * @param fontStyle Text font style.
  * @param textAlign Text alignment.
- * @param textSize Text size.
- * @param color Text color.
  */
 private fun createAxisTextPaint(
-    textAlign: Paint.Align = Paint.Align.CENTER,
-    textSize: Float = AXIS_VALUES_FONT_SIZE,
-    color: Int = 0xff000000.toInt()
+    fontStyle: FontStyle,
+    textAlign: Paint.Align = Paint.Align.CENTER
 ) = Paint(Paint.ANTI_ALIAS_FLAG).apply{
     this.textAlign = textAlign
-    this.textSize = textSize
-    this.color = color
+    this.textSize = fontStyle.size
+    this.color = fontStyle.color.toArgb()
+    this.isFakeBoldText = fontStyle.weight == FontWeight.Bold
 }
 
 @Preview
