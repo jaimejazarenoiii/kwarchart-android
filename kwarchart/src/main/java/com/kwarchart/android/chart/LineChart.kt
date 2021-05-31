@@ -79,7 +79,7 @@ fun <T> LineChart(
                     start = (maxVal.toString().length * 8).dp,
                     top = 10.dp,
                     end = 10.dp,
-                    bottom = AXIS_VALUES_FONT_SIZE.dp
+                    bottom = axesStyle.xValueFontStyle.size.dp
                 )
         ) {
             drawGrids(gridsStyle, maxLen)
