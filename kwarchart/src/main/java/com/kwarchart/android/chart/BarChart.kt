@@ -27,8 +27,7 @@ import com.kwarchart.android.util.ChartUtils
  * @param type Chart type for Bar.
  * @param title Chart title.
  * @param axesStyle X and Y axes style.
- * @param gridsColor Grids color.
- * @param showGrid Displayed state of grids.
+ * @param gridsStyle Grids style.
  * @param legendPos Legend position.
  */
 @Composable
