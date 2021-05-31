@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.enum.LineChartType
+import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.LineSeries
 import org.junit.Rule
@@ -79,8 +80,10 @@ class LineChartInstrumentedTest {
                     .height(300.dp),
                 data = mOneLineSeries,
                 title = "This week's transactions",
-                yAxisName = "Spent",
-                xAxisName = "Day"
+                axesStyle = AxesStyle(
+                    xName = "Day",
+                    yName = "Spent",
+                )
             )
         }
 
@@ -104,8 +107,10 @@ class LineChartInstrumentedTest {
                     .fillMaxWidth()
                     .height(300.dp),
                 data = mOneLineSeries,
-                yAxisName = "Spent",
-                xAxisName = "Day"
+                axesStyle = AxesStyle(
+                    xName = "Day",
+                    yName = "Spent",
+                )
             )
         }
 

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.*
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
+import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
 import com.kwarchart.android.model.Legend
@@ -28,10 +29,7 @@ import com.kwarchart.android.util.ChartUtils
  * @param data List of BarSeries which will be plotted in this chart.
  * @param type Chart type for Bar.
  * @param title Chart title.
- * @param xAxisName X-axis name.
- * @param yAxisName Y-axis name.
- * @param axesColor X and Y axes color
- * @param showAxes Displayed state of axes.
+ * @param axesStyle X and Y axes style.
  * @param gridsColor Grids color.
  * @param showGrid Displayed state of grids.
  * @param legendPos Legend position.
@@ -42,10 +40,7 @@ fun <T> BarChart(
     data: List<BarSeries<T>>,
     type: BarChartType = BarChartType.VERTICAL,
     title: String? = null,
-    xAxisName: String? = null,
-    yAxisName: String? = null,
-    axesColor: Color = Color.Gray,
-    showAxes: Boolean = true,
+    axesStyle: AxesStyle = AxesStyle(),
     gridsColor: Color = Color.Gray,
     showGrid: Boolean = true,
     legendPos: LegendPosition? = null
@@ -78,9 +73,8 @@ fun <T> BarChart(
 
     Chart(
         modifier = modifier,
-        xAxisName = xAxisName,
         title = title,
-        yAxisName = yAxisName,
+        axesStyle = axesStyle,
         legend = legendPos?.let { _ ->
             val tmpLegend = Legend(legendPos)
             data.forEach {
@@ -97,7 +91,7 @@ fun <T> BarChart(
                     start = (maxVal.toString().length * 8).dp,
                     top = 10.dp,
                     end = 10.dp,
-                    bottom = AXIS_VALUES_FONT_SIZE.dp
+                    bottom = axesStyle.xValueFontStyle.size.dp
                 )
         ) {
             val axisEndPadding = ((data.size / 2) * data.first().width) + data.first().width
@@ -114,18 +108,17 @@ fun <T> BarChart(
                     showVerticalLines = isHBar
                 )
             }
-            if (showAxes) {
-                drawAxes(
-                    axesColor,
-                    keys,
-                    maxVal,
-                    maxLen,
-                    xAxisEndPadding = xAxisEndPadding,
-                    reverseKeyVal = isHBar
-                )
-            }
 
             drawData(data, type, maxLen, maxVal, xAxisEndPadding)
+
+            drawAxes(
+                axesStyle,
+                keys,
+                maxVal,
+                maxLen,
+                xAxisEndPadding = xAxisEndPadding,
+                reverseKeyVal = isHBar
+            )
         }
     }
 }
@@ -343,8 +336,10 @@ fun BarChartVerticalPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis",
+        ),
         data = arrayListOf(
             BarSeries(
                 data = arrayListOf(
@@ -371,8 +366,10 @@ fun BarChartVerticalStackPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis",
+        ),
         data = arrayListOf(
             BarSeries(
                 data = arrayListOf(
@@ -412,8 +409,10 @@ fun BarChartHorizontalPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis",
+        ),
         data = arrayListOf(
             BarSeries(
                 data = arrayListOf(
@@ -441,8 +440,10 @@ fun BarChartHorizontalStackPreview() {
             .fillMaxWidth()
             .height(300.dp)
             .background(color = Color.White),
-        xAxisName = "X Axis",
-        yAxisName = "Y Axis",
+        axesStyle = AxesStyle(
+            xName = "X Axis",
+            yName = "Y Axis",
+        ),
         data = arrayListOf(
             BarSeries(
                 data = arrayListOf(

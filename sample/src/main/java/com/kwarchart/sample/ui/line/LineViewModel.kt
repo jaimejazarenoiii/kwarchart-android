@@ -14,49 +14,72 @@ class LineViewModel : ViewModel() {
     /**
      * LineSeries for expense.
      */
-    private val _spentSeries = MutableLiveData<LineSeries<Int>>().apply {
-        value = LineSeries(
-            data = mutableListOf(
-                ChartData(1, 50f),
-                ChartData(2, 350f),
-                ChartData(3, 250f),
-                ChartData(4, 200f),
-                ChartData(5, 800f),
-                ChartData(6, 500f),
-                ChartData(7, 600f)
-            ),
-            type = LineChartType.SMOOTH,
-            showDataPoint = true,
-            legend = "Spent"
-        )
-    }
+    private lateinit var _spentSeries: MutableLiveData<LineSeries<Int>>
 
     /**
      * LineSeries for budget goal.
      */
-    private val _goalSeries = LineSeries(
-        data = mutableListOf(
-            ChartData(1, 100f),
-            ChartData(2, 300f),
-            ChartData(3, 200f),
-            ChartData(4, 200f),
-            ChartData(5, 800f),
-            ChartData(6, 500f),
-            ChartData(7, 610f)
-        ),
-        color = Color.Green,
-        legend = "Budget"
-    )
+    private lateinit var _goalSeries: LineSeries<Int>
 
     /**
      * LineSeries for expense.
      */
-    val spentSeries: LiveData<LineSeries<Int>> = _spentSeries
+    lateinit var spentSeries: LiveData<LineSeries<Int>>
 
     /**
      * LineSeries for budget goal.
      */
-    val goalSeries: LineSeries<Int> = _goalSeries
+    lateinit var goalSeries: LineSeries<Int>
+
+    /**
+     * Is initialized state.
+     */
+    private var _isInit = false
+
+    /**
+     * Initialize data.
+     */
+    fun init(spentColor: Color, budgetColor: Color) {
+        if (_isInit) {
+            return
+        }
+
+        _spentSeries = MutableLiveData<LineSeries<Int>>().apply {
+            value = LineSeries(
+                data = mutableListOf(
+                    ChartData(1, 50f),
+                    ChartData(2, 350f),
+                    ChartData(3, 250f),
+                    ChartData(4, 200f),
+                    ChartData(5, 800f),
+                    ChartData(6, 500f),
+                    ChartData(7, 600f)
+                ),
+                type = LineChartType.SMOOTH,
+                color = spentColor,
+                showDataPoint = true,
+                legend = "Spent"
+            )
+        }
+        spentSeries = _spentSeries
+
+        _goalSeries = LineSeries(
+            data = mutableListOf(
+                ChartData(1, 100f),
+                ChartData(2, 300f),
+                ChartData(3, 200f),
+                ChartData(4, 200f),
+                ChartData(5, 800f),
+                ChartData(6, 500f),
+                ChartData(7, 610f)
+            ),
+            color = budgetColor,
+            legend = "Budget"
+        )
+        goalSeries = _goalSeries
+
+        _isInit = true
+    }
 
     /**
      * Add random LineSeries.
