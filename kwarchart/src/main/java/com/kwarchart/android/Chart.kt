@@ -4,12 +4,12 @@ import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kwarchart.android.chart.*
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
@@ -36,7 +37,9 @@ private const val WEIGHT_X_AXIS_NAME = 1f
  * @param modifier Modifier.
  * @param title Chart title.
  * @param axesStyle X and Y axes style.
- * @param legend Legend to be displayed in the chart.
+ * @param legends Legends to be displayed in the chart.
+ * @param legendColors Legend colors.
+ * @param legendPos Legend position.
  * @param content Chart's children.
  */
 @Composable
@@ -44,7 +47,9 @@ fun Chart(
     modifier: Modifier = Modifier,
     title: String? = null,
     axesStyle: AxesStyle = AxesStyle(),
-    legend: Legend? = null,
+    legends: List<Legend>? = null,
+    legendColors: List<Color>? = null,
+    legendPos: LegendPosition? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -55,13 +60,13 @@ fun Chart(
             Text(it)
         }
 
-        if (legend != null) TopLegends(legend)
+        if (legendPos != null) TopLegends(legends!!, legendColors!!, legendPos)
 
         Row(
             modifier = Modifier.fillMaxWidth().weight(WEIGHT_CANVAS_AREA),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (legend != null) LeftLegends(legend)
+            if (legendPos != null) LeftLegends(legends!!, legendColors!!, legendPos)
 
             axesStyle.yName?.let {
                 Text(
@@ -85,37 +90,44 @@ fun Chart(
                 }
             }
 
-            if (legend != null) RightLegends(legend)
+            if (legendPos != null) RightLegends(legends!!, legendColors!!, legendPos)
         }
 
-        if (legend != null) BottomLegends(legend)
+        if (legendPos != null) BottomLegends(legends!!, legendColors!!, legendPos)
     }
 }
 
 /**
  * Plot legends at the top of the chart.
  *
- * @param legend Legend to be plotted.
+ * @param legends Legends to be plotted.
+ * @param legendColors Legend colors.
+ * @param legendPos Legend position.
  */
 @Composable
-private fun ColumnScope.TopLegends(legend: Legend) {
+private fun ColumnScope.TopLegends(
+    legends: List<Legend>,
+    legendColors: List<Color>,
+    legendPos: LegendPosition
+) {
     if (
-        legend.position == LegendPosition.TOP_LEFT ||
-        legend.position == LegendPosition.TOP ||
-        legend.position == LegendPosition.TOP_RIGHT
+        legendPos == LegendPosition.TOP_LEFT ||
+        legendPos == LegendPosition.TOP ||
+        legendPos == LegendPosition.TOP_RIGHT
     ) {
         HorizontalLegends(
             modifier = Modifier
                 .align(
-                    if (legend.position == LegendPosition.TOP_LEFT)
+                    if (legendPos == LegendPosition.TOP_LEFT)
                         Alignment.Start
-                    else if (legend.position == LegendPosition.TOP)
+                    else if (legendPos == LegendPosition.TOP)
                         Alignment.CenterHorizontally
                     else
                         Alignment.End
                 )
                 .padding(10.dp),
-            legend = legend
+            legends = legends,
+            legendColors = legendColors
         )
     }
 }
@@ -123,14 +135,21 @@ private fun ColumnScope.TopLegends(legend: Legend) {
 /**
  * Plot legends at the left of the chart.
  *
- * @param legend Legend to be plotted.
+ * @param legends Legends to be plotted.
+ * @param legendColors Legend colors.
+ * @param legendPos Legend position.
  */
 @Composable
-private fun LeftLegends(legend: Legend) {
-    if (legend.position == LegendPosition.LEFT) {
+private fun LeftLegends(
+    legends: List<Legend>,
+    legendColors: List<Color>,
+    legendPos: LegendPosition
+) {
+    if (legendPos == LegendPosition.LEFT) {
         VerticalLegends(
             modifier = Modifier.padding(10.dp),
-            legend = legend
+            legends = legends,
+            legendColors = legendColors
         )
     }
 }
@@ -138,14 +157,21 @@ private fun LeftLegends(legend: Legend) {
 /**
  * Plot legends at the right of the chart.
  *
- * @param legend Legend to be plotted.
+ * @param legends Legends to be plotted.
+ * @param legendColors Legend colors.
+ * @param legendPos Legend position.
  */
 @Composable
-private fun RightLegends(legend: Legend) {
-    if (legend.position == LegendPosition.RIGHT) {
+private fun RightLegends(
+    legends: List<Legend>,
+    legendColors: List<Color>,
+    legendPos: LegendPosition
+) {
+    if (legendPos == LegendPosition.RIGHT) {
         VerticalLegends(
             modifier = Modifier.padding(10.dp),
-            legend = legend
+            legends = legends,
+            legendColors = legendColors
         )
     }
 }
@@ -153,27 +179,34 @@ private fun RightLegends(legend: Legend) {
 /**
  * Plot legends at the bottom of the chart.
  *
- * @param legend Legend to be plotted.
+ * @param legends Legends to be plotted.
+ * @param legendColors Legend colors.
+ * @param legendPos Legend position.
  */
 @Composable
-private fun ColumnScope.BottomLegends(legend: Legend) {
+private fun ColumnScope.BottomLegends(
+    legends: List<Legend>,
+    legendColors: List<Color>,
+    legendPos: LegendPosition
+) {
     if (
-        legend.position == LegendPosition.BOTTOM_LEFT ||
-        legend.position == LegendPosition.BOTTOM ||
-        legend.position == LegendPosition.BOTTOM_RIGHT
+        legendPos == LegendPosition.BOTTOM_LEFT ||
+        legendPos == LegendPosition.BOTTOM ||
+        legendPos == LegendPosition.BOTTOM_RIGHT
     ) {
         HorizontalLegends(
             modifier = Modifier
                 .align(
-                    if (legend.position == LegendPosition.BOTTOM_LEFT)
+                    if (legendPos == LegendPosition.BOTTOM_LEFT)
                         Alignment.Start
-                    else if (legend.position == LegendPosition.BOTTOM)
+                    else if (legendPos == LegendPosition.BOTTOM)
                         Alignment.CenterHorizontally
                     else
                         Alignment.End
                 )
                 .padding(10.dp),
-            legend = legend
+            legends = legends,
+            legendColors = legendColors
         )
     }
 }
@@ -182,23 +215,28 @@ private fun ColumnScope.BottomLegends(legend: Legend) {
  * Row of legends.
  *
  * @param modifier Modifier.
- * @param legend Legend to be displayed horizontally.
+ * @param legends Legends to be displayed horizontally.
+ * @param legendColors Legend colors.
  */
 @Composable
 private fun HorizontalLegends(
     modifier: Modifier,
-    legend: Legend
+    legends: List<Legend>,
+    legendColors: List<Color>
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        legend.legends.forEachIndexed { i, text ->
+        legends.forEachIndexed { i, legend ->
             Box(
                 modifier = Modifier.size(10.dp).background(
-                    color = legend.colors[i],
-                    shape = CircleShape
+                    color = legendColors[i],
+                    shape = legend.shape
                 )
             )
             Text(
-                text = text,
+                text = legend.text,
+                color = legend.fontStyle.color,
+                fontSize = legend.fontStyle.size.sp,
+                fontWeight = legend.fontStyle.weight,
                 modifier = Modifier.padding(start = 5.dp, end = 10.dp)
             )
         }
@@ -209,24 +247,29 @@ private fun HorizontalLegends(
  * Column of legends.
  *
  * @param modifier Modifier.
- * @param legend Legend to be displayed vertically.
+ * @param legends Legends to be displayed vertically.
+ * @param legendColors Legend colors.
  */
 @Composable
 private fun VerticalLegends(
     modifier: Modifier,
-    legend: Legend
+    legends: List<Legend>,
+    legendColors: List<Color>
 ) {
     Column(modifier = modifier) {
-        legend.legends.forEachIndexed { i, text ->
+        legends.forEachIndexed { i, legend ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier.size(10.dp).background(
-                        color = legend.colors[i],
-                        shape = CircleShape
+                        color = legendColors[i],
+                        shape = legend.shape
                     )
                 )
                 Text(
-                    text = text,
+                    text = legend.text,
+                    color = legend.fontStyle.color,
+                    fontSize = legend.fontStyle.size.sp,
+                    fontWeight = legend.fontStyle.weight,
                     modifier = Modifier.padding(start = 5.dp)
                 )
             }

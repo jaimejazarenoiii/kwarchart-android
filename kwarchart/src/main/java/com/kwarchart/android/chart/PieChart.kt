@@ -51,14 +51,13 @@ fun <T> PieChart(
     Chart(
         modifier = modifier,
         title = title,
-        legend = legendPos?.let { _ ->
-            val tmpLegend = Legend(legendPos)
-            data.forEach {
-                tmpLegend.legends.add(it.legend)
-                tmpLegend.colors.add(it.color)
-            }
-            tmpLegend
-        }
+        legends = data.map {
+            it.legend
+        },
+        legendColors = data.map {
+            it.color
+        },
+        legendPos = legendPos
     ) {
         ChartCanvas(modifier = modifier.padding(10.dp)) {
             if (type == PieChartType.NORMAL) {
@@ -168,22 +167,22 @@ fun PieChartNormalPreview() {
             PieSeries(
                 data = ChartData("Bills", 1050f),
                 color = Color.Red,
-                legend = "Bills"
+                legend = Legend("Bills")
             ),
             PieSeries(
                 data = ChartData("Shopping", 500f),
                 color = Color.Green,
-                legend = "Shopping"
+                legend = Legend("Shopping")
             ),
             PieSeries(
                 data = ChartData("Food", 2050f),
                 color = Color.Blue,
-                legend = "Food"
+                legend = Legend("Food")
             ),
             PieSeries(
                 data = ChartData("Transportation", 800f),
                 color = Color.Yellow,
-                legend = "Transportation"
+                legend = Legend("Transportation")
             ),
         ),
         title = "This month's transactions",
@@ -203,22 +202,22 @@ fun PieChartDoughnutPreview() {
             PieSeries(
                 data = ChartData("Bills", 1050f),
                 color = Color.Red,
-                legend = "Bills"
+                legend = Legend("Bills")
             ),
             PieSeries(
                 data = ChartData("Shopping", 500f),
                 color = Color.Green,
-                legend = "Shopping"
+                legend = Legend("Shopping")
             ),
             PieSeries(
                 data = ChartData("Food", 2050f),
                 color = Color.Blue,
-                legend = "Food"
+                legend = Legend("Food")
             ),
             PieSeries(
                 data = ChartData("Transportation", 800f),
                 color = Color.Yellow,
-                legend = "Transportation"
+                legend = Legend("Transportation")
             ),
         ),
         type = PieChartType.DOUGHNUT,

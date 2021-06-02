@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.enum.PieChartType
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.PieSeries
 import org.junit.Rule
 import org.junit.Test
@@ -35,7 +36,7 @@ class PieChartInstrumentedTest {
                         Random.nextInt(255),
                         Random.nextInt(255)
                     ),
-                    legend = "${initialLabels[i]} ($fl)"
+                    legend = Legend("${initialLabels[i]} ($fl)")
                 )
             )
         }
@@ -113,7 +114,7 @@ class PieChartInstrumentedTest {
         }
 
         mPieSeries.forEach {
-            composeTestRule.onNodeWithText("${it.legend}").assertIsDisplayed()
+            composeTestRule.onNodeWithText("${it.legend.text}").assertIsDisplayed()
         }
     }
 

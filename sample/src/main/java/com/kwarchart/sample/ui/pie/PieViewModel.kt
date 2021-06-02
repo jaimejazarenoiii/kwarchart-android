@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.PieSeries
 import kotlin.random.Random
 
@@ -31,7 +32,7 @@ class PieViewModel : ViewModel() {
                         Random.nextInt(255),
                         Random.nextInt(255)
                     ),
-                    legend = "${initialLabels[i]} ($fl)"
+                    legend = Legend("${initialLabels[i]} ($fl)")
                 )
             )
         }
@@ -59,7 +60,7 @@ class PieViewModel : ViewModel() {
                     Random.nextInt(255),
                     Random.nextInt(255)
                 ),
-                legend = "$label ($value)"
+                legend = Legend("$label ($value)")
             )
         )
 

@@ -10,6 +10,7 @@ import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.enum.LineChartType
 import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.LineSeries
 import org.junit.Rule
 import org.junit.Test
@@ -29,7 +30,7 @@ class LineChartInstrumentedTest {
             ),
             type = LineChartType.SMOOTH,
             showDataPoint = true,
-            legend = "Spent"
+            legend = Legend("Spent")
         ),
     )
 
@@ -46,7 +47,7 @@ class LineChartInstrumentedTest {
                 ChartData(7, 610f)
             ),
             color = Color.Green,
-            legend = "Budget"
+            legend = Legend("Budget")
         )
     )
 
@@ -64,7 +65,7 @@ class LineChartInstrumentedTest {
             ),
             type = LineChartType.AREA,
             color = Color.Green,
-            legend = "Budget"
+            legend = Legend("Budget")
         )
     )
 

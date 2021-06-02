@@ -29,5 +29,5 @@ data class BarSeries<T>(
     /**
      * Legend for the bar series.
      */
-    val legend: String,
+    val legend: Legend
 )
