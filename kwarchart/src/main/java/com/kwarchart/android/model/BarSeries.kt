@@ -12,9 +12,11 @@ data class BarSeries<T>(
     val data: List<ChartData<T>>,
 
     /**
-     * Color of the bar series.
+     * Color(s) of the bar series.
+     *
+     * Set as list because gradient is supported.
      */
-    val color: Color = Color.Black,
+    val colors: List<Color> = arrayListOf(Color.Black),
 
     /**
      * Width of the bar series.

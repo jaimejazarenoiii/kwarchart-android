@@ -64,7 +64,7 @@ class BarViewModel : ViewModel() {
                 ChartData(6, 500f),
                 ChartData(7, 600f)
             ),
-            color = spentColor,
+            colors = arrayListOf(spentColor),
             radius = 5f,
             legend = Legend("Spent")
         )
@@ -80,7 +80,7 @@ class BarViewModel : ViewModel() {
                 ChartData(6, 500f),
                 ChartData(7, 610f)
             ),
-            color = budgetColor,
+            colors = arrayListOf(budgetColor),
             radius = 10f,
             legend = Legend("Budget", RectangleShape)
         )
