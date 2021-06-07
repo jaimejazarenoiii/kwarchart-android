@@ -63,6 +63,7 @@ class BarViewModel : ViewModel() {
                 ChartData(7, 600f)
             ),
             color = spentColor,
+            radius = 5f,
             legend = "Spent"
         )
         spentSeries = _spentSeries
@@ -78,6 +79,7 @@ class BarViewModel : ViewModel() {
                 ChartData(7, 610f)
             ),
             color = budgetColor,
+            radius = 10f,
             legend = "Budget"
         )
         goalSeries = _goalSeries

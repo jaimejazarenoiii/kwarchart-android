@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,7 +68,7 @@ fun <T> BarChart(
     }
 
     val maxVal = when (type) {
-        BarChartType.VERTICAL, BarChartType.HORIZONTAL -> maxVals.max()!!
+        BarChartType.VERTICAL, BarChartType.HORIZONTAL -> maxVals.maxOrNull()!!
 
         BarChartType.VERTICAL_STACKED, BarChartType.HORIZONTAL_STACKED -> maxVals.sum()
     }
@@ -166,10 +166,13 @@ private fun <T> DrawScope.drawVerticalBars(
     maxVal: Float,
     xAxisEndPadding: Float
 ) {
+    val path = Path()
     val halfDataSize = data.size / 2
 
     data.forEachIndexed { i, barSeries ->
         val vGap = (size.width - xAxisEndPadding) / maxLen
+        val halfBarWidth = barSeries.width / 2
+        val finalRadius = minOf(barSeries.radius, halfBarWidth)
 
         var deduct: Float
 
@@ -177,19 +180,33 @@ private fun <T> DrawScope.drawVerticalBars(
             deduct = (i - halfDataSize) * barSeries.width
         } else {
             if (i == halfDataSize) {
-                deduct = -barSeries.width / 2
+                deduct = -halfBarWidth
             } else {
                 deduct = (i - halfDataSize) * barSeries.width
-                deduct -= barSeries.width / 2
+                deduct -= halfBarWidth
             }
         }
 
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint(j, chartData, size.height, vGap, maxVal)
+            val topLeftX = point.x + deduct
+            val topRightX = topLeftX + barSeries.width
 
-            drawRect(
-                topLeft = Offset(point.x + deduct, point.y),
-                size = Size(barSeries.width, size.height - point.y),
+            path.reset()
+            path.moveTo(topLeftX, point.y + finalRadius)
+            path.quadraticBezierTo(
+                topLeftX, point.y,
+                topLeftX + finalRadius, point.y
+            )
+            path.lineTo(topRightX - finalRadius, point.y)
+            path.quadraticBezierTo(
+                topRightX, point.y,
+                topRightX, point.y + finalRadius
+            )
+            path.lineTo(topRightX, size.height)
+            path.lineTo(topLeftX, size.height)
+            drawPath(
+                path = path,
                 color = barSeries.color
             )
         }
@@ -210,14 +227,19 @@ private fun <T> DrawScope.drawVerticalStackedBars(
     maxVal: Float,
     xAxisEndPadding: Float
 ) {
+    val path = Path()
     val prevHeights = arrayListOf<Float>()
+    var prevBottomRadius = 0f
 
     data.forEachIndexed { i, barSeries ->
         val vGap = (size.width - xAxisEndPadding) / maxLen
         val deduct = -barSeries.width / 2
+        val finalRadius = minOf(barSeries.radius, -deduct)
 
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint(j, chartData, size.height, vGap, maxVal)
+            val topLeftX = point.x + deduct
+            val topRightX = topLeftX + barSeries.width
             val barSize = Size(barSeries.width, size.height - point.y)
 
             var yOffset = 0f
@@ -229,12 +251,34 @@ private fun <T> DrawScope.drawVerticalStackedBars(
                 prevHeights.add(barSize.height)
             }
 
-            drawRect(
-                topLeft = Offset(point.x + deduct, point.y - yOffset),
-                size = barSize,
+            path.reset()
+            path.moveTo(topLeftX, point.y + finalRadius - yOffset)
+            path.quadraticBezierTo(
+                topLeftX, point.y - yOffset,
+                topLeftX + finalRadius, point.y - yOffset
+            )
+            path.lineTo(topRightX - finalRadius, point.y - yOffset)
+            path.quadraticBezierTo(
+                topRightX, point.y - yOffset,
+                topRightX, point.y + finalRadius - yOffset
+            )
+            path.lineTo(topRightX, size.height - yOffset + prevBottomRadius)
+            path.quadraticBezierTo(
+                topRightX, size.height - yOffset,
+                topRightX - prevBottomRadius, size.height - yOffset
+            )
+            path.lineTo(topLeftX + prevBottomRadius, size.height - yOffset)
+            path.quadraticBezierTo(
+                topLeftX, size.height - yOffset,
+                topLeftX, size.height - yOffset + prevBottomRadius
+            )
+            drawPath(
+                path = path,
                 color = barSeries.color
             )
         }
+
+        prevBottomRadius = finalRadius
     }
 }
 
@@ -252,11 +296,14 @@ private fun <T> DrawScope.drawHorizontalBars(
     maxVal: Float,
     yAxisEndPadding: Float
 ) {
+    val path = Path()
     val startPoint = origin()
     val halfDataSize = data.size / 2
 
     data.forEachIndexed { i, barSeries ->
         val hGap = (size.height - yAxisEndPadding) / maxLen
+        val halfBarWidth = barSeries.width / 2
+        val finalRadius = minOf(barSeries.radius, halfBarWidth)
 
         var deduct: Float
 
@@ -264,19 +311,34 @@ private fun <T> DrawScope.drawHorizontalBars(
             deduct = (i - halfDataSize) * barSeries.width
         } else {
             if (i == halfDataSize) {
-                deduct = -barSeries.width / 2
+                deduct = -halfBarWidth
             } else {
                 deduct = (i - halfDataSize) * barSeries.width
-                deduct -= barSeries.width / 2
+                deduct -= halfBarWidth
             }
         }
 
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint2(j, chartData, size.width, hGap, maxVal)
+            val rightX = size.width - point.x
+            val topY = startPoint.y - point.y + deduct
+            val bottomY = topY + barSeries.width
 
-            drawRect(
-                topLeft = Offset(1f, startPoint.y - point.y + deduct),
-                size = Size(size.width - point.x, barSeries.width),
+            path.reset()
+            path.moveTo(rightX - finalRadius, topY)
+            path.quadraticBezierTo(
+                rightX, topY,
+                rightX, topY + finalRadius
+            )
+            path.lineTo(rightX, bottomY - finalRadius)
+            path.quadraticBezierTo(
+                rightX, bottomY,
+                rightX - finalRadius, bottomY
+            )
+            path.lineTo(0f, bottomY)
+            path.lineTo(0f, topY)
+            drawPath(
+                path = path,
                 color = barSeries.color
             )
         }
@@ -297,12 +359,15 @@ private fun <T> DrawScope.drawHorizontalStackedBars(
     maxVal: Float,
     yAxisEndPadding: Float
 ) {
+    val path = Path()
     val startPoint = origin()
     val prevWidths = arrayListOf<Float>()
+    var prevBottomRadius = 0f
 
     data.forEachIndexed { i, barSeries ->
         val hGap = (size.height - yAxisEndPadding) / maxLen
         val deduct = -barSeries.width / 2
+        val finalRadius = minOf(barSeries.radius, -deduct)
 
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint2(j, chartData, size.width, hGap, maxVal)
@@ -317,12 +382,39 @@ private fun <T> DrawScope.drawHorizontalStackedBars(
                 prevWidths.add(barSize.width)
             }
 
-            drawRect(
-                topLeft = Offset(1f + xOffset, startPoint.y - point.y + deduct),
-                size = barSize,
+            val rightX = barSize.width + xOffset
+            val topY = startPoint.y - point.y + deduct
+            val bottomY = topY + barSeries.width
+
+            path.reset()
+            path.moveTo(rightX - finalRadius, topY)
+            path.quadraticBezierTo(
+                rightX, topY,
+                rightX, topY + finalRadius
+            )
+            path.lineTo(rightX, bottomY - finalRadius)
+            path.quadraticBezierTo(
+                rightX, bottomY,
+                rightX - finalRadius, bottomY
+            )
+            path.lineTo(xOffset - prevBottomRadius, bottomY)
+            path.quadraticBezierTo(
+                xOffset, bottomY,
+                xOffset, bottomY - prevBottomRadius
+            )
+            path.lineTo(xOffset, topY + finalRadius)
+            path.quadraticBezierTo(
+                xOffset, topY,
+                xOffset - prevBottomRadius, topY
+            )
+            path.lineTo(xOffset - prevBottomRadius, topY)
+            drawPath(
+                path = path,
                 color = barSeries.color
             )
         }
+
+        prevBottomRadius = finalRadius
     }
 }
 

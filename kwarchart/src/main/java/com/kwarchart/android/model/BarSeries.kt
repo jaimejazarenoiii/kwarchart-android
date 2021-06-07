@@ -22,6 +22,11 @@ data class BarSeries<T>(
     val width: Float = 20f,
 
     /**
+     * Bar corner radius.
+     */
+    val radius: Float = 0f,
+
+    /**
      * Legend for the bar series.
      */
     val legend: String,
