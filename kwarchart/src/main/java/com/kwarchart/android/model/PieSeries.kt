@@ -16,5 +16,5 @@ data class PieSeries<T>(
     /**
      * Legend for the pie series.
      */
-    val legend: String
+    val legend: Legend
 )

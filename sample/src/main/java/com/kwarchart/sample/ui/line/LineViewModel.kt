@@ -1,11 +1,13 @@
 package com.kwarchart.sample.ui.line
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kwarchart.android.enum.LineChartType
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
 import com.kwarchart.android.model.LineSeries
 import kotlin.random.Random
 
@@ -58,7 +60,7 @@ class LineViewModel : ViewModel() {
                 type = LineChartType.SMOOTH,
                 color = spentColor,
                 showDataPoint = true,
-                legend = "Spent"
+                legend = Legend("Spent")
             )
         }
         spentSeries = _spentSeries
@@ -74,7 +76,7 @@ class LineViewModel : ViewModel() {
                 ChartData(7, 610f)
             ),
             color = budgetColor,
-            legend = "Budget"
+            legend = Legend("Budget", RectangleShape)
         )
         goalSeries = _goalSeries
 

@@ -1,24 +1,24 @@
 package com.kwarchart.android.model
 
-import androidx.compose.ui.graphics.Color
-import com.kwarchart.android.enum.LegendPosition
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.graphics.Shape
 
 /**
  * Legends to be displayed in chart.
  */
 data class Legend(
     /**
-     * Legend position.
+     * Legend text.
      */
-    val position: LegendPosition,
+    val text: String,
 
     /**
-     * Legends to be displayed.
+     * Legends shape.
      */
-    val legends: MutableList<String> = mutableListOf(),
+    val shape: Shape = CircleShape,
 
     /**
-     * Color of data represented by the legends.
+     * Font style.
      */
-    val colors: MutableList<Color> = mutableListOf()
+    val fontStyle: FontStyle = FontStyle(14f)
 )

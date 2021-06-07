@@ -45,5 +45,5 @@ data class LineSeries<T>(
     /**
      * Legend for the line series.
      */
-    val legend: String
+    val legend: Legend
 )

@@ -63,14 +63,13 @@ fun <T> LineChart(
         modifier = modifier,
         title = title,
         axesStyle = axesStyle,
-        legend = legendPos?.let { _ ->
-            val tmpLegend = Legend(legendPos)
-            data.forEach {
-                tmpLegend.legends.add(it.legend)
-                tmpLegend.colors.add(it.color)
-            }
-            tmpLegend
-        }
+        legends = data.map {
+            it.legend
+        },
+        legendColors = data.map {
+            it.color
+        },
+        legendPos = legendPos
     ) {
         Canvas(
             modifier = modifier
@@ -200,7 +199,7 @@ fun LineChartNormalPreview() {
                     ChartData(4, 200f),
                     ChartData(5, 800f),
                 ),
-                legend = "Data"
+                legend = Legend("Data")
             )
         )
     )
@@ -228,7 +227,7 @@ fun LineChartSmoothPreview() {
                     ChartData(5, 800f),
                 ),
                 type = LineChartType.SMOOTH,
-                legend = "Data"
+                legend = Legend("Data")
             )
         )
     )
@@ -256,7 +255,7 @@ fun LineChartAreaPreview() {
                     ChartData(5, 800f),
                 ),
                 type = LineChartType.AREA,
-                legend = "Data"
+                legend = Legend("Data")
             )
         )
     )

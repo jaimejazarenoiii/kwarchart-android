@@ -77,14 +77,13 @@ fun <T> BarChart(
         modifier = modifier,
         title = title,
         axesStyle = axesStyle,
-        legend = legendPos?.let { _ ->
-            val tmpLegend = Legend(legendPos)
-            data.forEach {
-                tmpLegend.legends.add(it.legend)
-                tmpLegend.colors.add(it.color)
-            }
-            tmpLegend
-        }
+        legends = data.map {
+            it.legend
+        },
+        legendColors = data.map {
+            it.color
+        },
+        legendPos = legendPos
     ) {
         Canvas(
             modifier = modifier
@@ -442,7 +441,7 @@ fun BarChartVerticalPreview() {
                     ChartData(7, 610f)
                 ),
                 color = Color.Green,
-                legend = "Budget"
+                legend = Legend("Budget")
             )
         )
     )
@@ -472,7 +471,7 @@ fun BarChartVerticalStackPreview() {
                     ChartData(7, 610f)
                 ),
                 color = Color.Green,
-                legend = "Budget"
+                legend = Legend("Budget")
             ),
             BarSeries(
                 data = arrayListOf(
@@ -484,7 +483,7 @@ fun BarChartVerticalStackPreview() {
                     ChartData(6, 500f),
                     ChartData(7, 600f)
                 ),
-                legend = "Spent"
+                legend = Legend("Spent")
             )
         ),
         type = BarChartType.VERTICAL_STACKED
@@ -515,7 +514,7 @@ fun BarChartHorizontalPreview() {
                     ChartData(7, 610f)
                 ),
                 color = Color.Green,
-                legend = "Budget"
+                legend = Legend("Budget")
             )
         ),
         type = BarChartType.HORIZONTAL
@@ -546,7 +545,7 @@ fun BarChartHorizontalStackPreview() {
                     ChartData(7, 610f)
                 ),
                 color = Color.Green,
-                legend = "Budget"
+                legend = Legend("Budget")
             ),
             BarSeries(
                 data = arrayListOf(
@@ -558,7 +557,7 @@ fun BarChartHorizontalStackPreview() {
                     ChartData(6, 500f),
                     ChartData(7, 600f)
                 ),
-                legend = "Spent"
+                legend = Legend("Spent")
             )
         ),
         type = BarChartType.HORIZONTAL_STACKED

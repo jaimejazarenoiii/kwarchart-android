@@ -1,11 +1,13 @@
 package com.kwarchart.sample.ui.bar
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
 import kotlin.random.Random
 
 class BarViewModel : ViewModel() {
@@ -64,7 +66,7 @@ class BarViewModel : ViewModel() {
             ),
             color = spentColor,
             radius = 5f,
-            legend = "Spent"
+            legend = Legend("Spent")
         )
         spentSeries = _spentSeries
 
@@ -80,7 +82,7 @@ class BarViewModel : ViewModel() {
             ),
             color = budgetColor,
             radius = 10f,
-            legend = "Budget"
+            legend = Legend("Budget", RectangleShape)
         )
         goalSeries = _goalSeries
 

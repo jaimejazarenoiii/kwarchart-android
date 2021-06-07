@@ -14,6 +14,7 @@ import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.BarSeries
 import com.kwarchart.android.model.ChartData
+import com.kwarchart.android.model.Legend
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,7 +31,7 @@ class BarChartInstrumentedTest {
                 ChartData(6, 500f),
                 ChartData(7, 600f)
             ),
-            legend = "Spent"
+            legend = Legend("Spent")
         ),
     )
 
@@ -47,7 +48,7 @@ class BarChartInstrumentedTest {
                 ChartData(7, 610f)
             ),
             color = Color.Green,
-            legend = "Budget"
+            legend = Legend("Budget")
         )
     )
 
