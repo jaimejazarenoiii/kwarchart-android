@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.*
@@ -81,7 +82,7 @@ fun <T> BarChart(
             it.legend
         },
         legendColors = data.map {
-            it.color
+            it.colors.first()
         },
         legendPos = legendPos
     ) {
@@ -186,6 +187,13 @@ private fun <T> DrawScope.drawVerticalBars(
             }
         }
 
+        val gradientColor = if (barSeries.colors.size == 1)
+            arrayListOf(
+                barSeries.colors.first(),
+                barSeries.colors.first()
+            )
+        else barSeries.colors
+
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint(j, chartData, size.height, vGap, maxVal)
             val topLeftX = point.x + deduct
@@ -206,7 +214,11 @@ private fun <T> DrawScope.drawVerticalBars(
             path.lineTo(topLeftX, size.height)
             drawPath(
                 path = path,
-                color = barSeries.color
+                brush = Brush.verticalGradient(
+                    gradientColor,
+                    startY = point.y,
+                    endY = size.height
+                )
             )
         }
     }
@@ -234,6 +246,13 @@ private fun <T> DrawScope.drawVerticalStackedBars(
         val vGap = (size.width - xAxisEndPadding) / maxLen
         val deduct = -barSeries.width / 2
         val finalRadius = minOf(barSeries.radius, -deduct)
+
+        val gradientColor = if (barSeries.colors.size == 1)
+            arrayListOf(
+                barSeries.colors.first(),
+                barSeries.colors.first()
+            )
+        else barSeries.colors
 
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint(j, chartData, size.height, vGap, maxVal)
@@ -273,7 +292,11 @@ private fun <T> DrawScope.drawVerticalStackedBars(
             )
             drawPath(
                 path = path,
-                color = barSeries.color
+                brush = Brush.verticalGradient(
+                    gradientColor,
+                    startY = point.y - yOffset,
+                    endY = size.height - yOffset
+                )
             )
         }
 
@@ -317,6 +340,13 @@ private fun <T> DrawScope.drawHorizontalBars(
             }
         }
 
+        val gradientColor = if (barSeries.colors.size == 1)
+            arrayListOf(
+                barSeries.colors.first(),
+                barSeries.colors.first()
+            )
+        else barSeries.colors.reversed()
+
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint2(j, chartData, size.width, hGap, maxVal)
             val rightX = size.width - point.x
@@ -338,7 +368,11 @@ private fun <T> DrawScope.drawHorizontalBars(
             path.lineTo(0f, topY)
             drawPath(
                 path = path,
-                color = barSeries.color
+                brush = Brush.horizontalGradient(
+                    gradientColor,
+                    startX = 0f,
+                    endX = rightX
+                )
             )
         }
     }
@@ -367,6 +401,13 @@ private fun <T> DrawScope.drawHorizontalStackedBars(
         val hGap = (size.height - yAxisEndPadding) / maxLen
         val deduct = -barSeries.width / 2
         val finalRadius = minOf(barSeries.radius, -deduct)
+
+        val gradientColor = if (barSeries.colors.size == 1)
+            arrayListOf(
+                barSeries.colors.first(),
+                barSeries.colors.first()
+            )
+        else barSeries.colors.reversed()
 
         barSeries.data.forEachIndexed { j, chartData ->
             val point = ChartUtils.getDataPoint2(j, chartData, size.width, hGap, maxVal)
@@ -409,7 +450,11 @@ private fun <T> DrawScope.drawHorizontalStackedBars(
             path.lineTo(xOffset - prevBottomRadius, topY)
             drawPath(
                 path = path,
-                color = barSeries.color
+                brush = Brush.horizontalGradient(
+                    gradientColor,
+                    startX = xOffset,
+                    endX = rightX
+                )
             )
         }
 
@@ -440,7 +485,7 @@ fun BarChartVerticalPreview() {
                     ChartData(6, 400f),
                     ChartData(7, 610f)
                 ),
-                color = Color.Green,
+                colors = arrayListOf(Color.Green),
                 legend = Legend("Budget")
             )
         )
@@ -470,7 +515,7 @@ fun BarChartVerticalStackPreview() {
                     ChartData(6, 400f),
                     ChartData(7, 610f)
                 ),
-                color = Color.Green,
+                colors = arrayListOf(Color.Green),
                 legend = Legend("Budget")
             ),
             BarSeries(
@@ -513,7 +558,7 @@ fun BarChartHorizontalPreview() {
                     ChartData(6, 400f),
                     ChartData(7, 610f)
                 ),
-                color = Color.Green,
+                colors = arrayListOf(Color.Green),
                 legend = Legend("Budget")
             )
         ),
@@ -544,7 +589,7 @@ fun BarChartHorizontalStackPreview() {
                     ChartData(6, 400f),
                     ChartData(7, 610f)
                 ),
-                color = Color.Green,
+                colors = arrayListOf(Color.Green),
                 legend = Legend("Budget")
             ),
             BarSeries(

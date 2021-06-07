@@ -18,9 +18,11 @@ data class LineSeries<T>(
     val type: LineChartType = LineChartType.NORMAL,
 
     /**
-     * Color of the line series.
+     * Color(s) of the line series.
+     *
+     * Set as list because gradient is supported.
      */
-    val color: Color = Color.Black,
+    val colors: List<Color> = arrayListOf(Color.Black),
 
     /**
      * Width of the line series.
@@ -30,7 +32,7 @@ data class LineSeries<T>(
     /**
      * Color of the data point in the line series.
      */
-    val dataPointColor: Color = color,
+    val dataPointColor: Color = colors.first(),
 
     /**
      * Data point displayed state.

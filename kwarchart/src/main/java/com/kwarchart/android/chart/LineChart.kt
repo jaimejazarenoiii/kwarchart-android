@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.*
@@ -67,7 +68,7 @@ fun <T> LineChart(
             it.legend
         },
         legendColors = data.map {
-            it.color
+            it.colors.first()
         },
         legendPos = legendPos
     ) {
@@ -148,22 +149,31 @@ private fun <T> DrawScope.drawData(
         leftPoint = p
     }
 
+    val gradientColor = if (lineSeries.colors.size == 1)
+        arrayListOf(
+            lineSeries.colors.first(),
+            lineSeries.colors.first()
+        )
+    else lineSeries.colors
+
     if (lineSeries.type == LineChartType.AREA) {
         areaPath?.lineTo(lastX, leftPoint.y)
         drawPath(
             path = areaPath!!,
-            color = Color(
-                red = lineSeries.color.red,
-                green = lineSeries.color.green,
-                blue = lineSeries.color.blue,
-                alpha = 0.5f
-            )
+            brush = Brush.horizontalGradient(gradientColor.map {
+                Color(
+                    red = it.red,
+                    green = it.green,
+                    blue = it.blue,
+                    alpha = 0.5f
+                )
+            }),
         )
     }
 
     drawPath(
         path = path,
-        color = lineSeries.color,
+        brush = Brush.horizontalGradient(gradientColor),
         style = Stroke(lineSeries.width.toFloat())
     )
 

@@ -9,9 +9,11 @@ data class PieSeries<T>(
     val data: ChartData<T>,
 
     /**
-     * Color of the pie series.
+     * Color(s) of the pie series.
+     *
+     * Set as list because gradient is supported.
      */
-    val color: Color = Color.Black,
+    val colors: List<Color> = arrayListOf(Color.Black),
 
     /**
      * Legend for the pie series.

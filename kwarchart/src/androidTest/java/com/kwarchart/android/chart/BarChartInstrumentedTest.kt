@@ -47,7 +47,7 @@ class BarChartInstrumentedTest {
                 ChartData(6, 500f),
                 ChartData(7, 610f)
             ),
-            color = Color.Green,
+            colors = arrayListOf(Color.Green),
             legend = Legend("Budget")
         )
     )

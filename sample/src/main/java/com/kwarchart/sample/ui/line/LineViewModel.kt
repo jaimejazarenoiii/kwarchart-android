@@ -58,7 +58,7 @@ class LineViewModel : ViewModel() {
                     ChartData(7, 600f)
                 ),
                 type = LineChartType.SMOOTH,
-                color = spentColor,
+                colors = arrayListOf(spentColor),
                 showDataPoint = true,
                 legend = Legend("Spent")
             )
@@ -75,7 +75,7 @@ class LineViewModel : ViewModel() {
                 ChartData(6, 500f),
                 ChartData(7, 610f)
             ),
-            color = budgetColor,
+            colors = arrayListOf(budgetColor),
             legend = Legend("Budget", RectangleShape)
         )
         goalSeries = _goalSeries
