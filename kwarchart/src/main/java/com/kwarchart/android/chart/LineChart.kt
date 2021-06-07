@@ -13,10 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.*
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.enum.LineChartType
-import com.kwarchart.android.model.AxesStyle
-import com.kwarchart.android.model.ChartData
-import com.kwarchart.android.model.Legend
-import com.kwarchart.android.model.LineSeries
+import com.kwarchart.android.model.*
 import com.kwarchart.android.util.ChartUtils
 import com.kwarchart.android.util.PathUtils
 
@@ -29,8 +26,7 @@ private const val WEIGHT_LINE_CHART_CANVAS = 5f
  * @param data List of LineSeries which will be plotted in this chart.
  * @param title Chart title.
  * @param axesStyle X and Y axes style.
- * @param gridsColor Grids color.
- * @param showGrid Displayed state of grids.
+ * @param gridsStyle Grids style.
  * @param legendPos Legend position.
  */
 @Composable
@@ -39,8 +35,7 @@ fun <T> LineChart(
     data: List<LineSeries<T>>,
     title: String? = null,
     axesStyle: AxesStyle = AxesStyle(),
-    gridsColor: Color = Color.Gray,
-    showGrid: Boolean = true,
+    gridsStyle: GridsStyle = GridsStyle(),
     legendPos: LegendPosition? = null
 ) {
     val keys = mutableListOf<T>()
@@ -87,9 +82,7 @@ fun <T> LineChart(
                     bottom = axesStyle.xValueFontStyle.size.dp
                 )
         ) {
-            if (showGrid) {
-                drawGrids(maxLen, gridsColor)
-            }
+            drawGrids(gridsStyle, maxLen)
 
             data.forEach {
                 drawData(it, maxLen, maxVal)

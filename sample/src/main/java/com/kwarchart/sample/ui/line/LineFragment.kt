@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.res.ResourcesCompat
@@ -20,6 +21,7 @@ import com.kwarchart.android.chart.LineChart
 import com.kwarchart.android.enum.LegendPosition
 import com.kwarchart.android.model.AxesStyle
 import com.kwarchart.android.model.FontStyle
+import com.kwarchart.android.model.GridsStyle
 import com.kwarchart.android.model.Style
 import com.kwarchart.sample.R
 import com.kwarchart.sample.databinding.FragmentLineBinding
@@ -76,6 +78,16 @@ class LineFragment : Fragment() {
                             xValueFontStyle = FontStyle(
                                 size = 40f,
                                 weight = FontWeight.Bold
+                            )
+                        ),
+                        gridsStyle = GridsStyle(
+                            horizontal = Style(
+                                color = Color(0xffe5ebef),
+                                strokeStyle = PathEffect.dashPathEffect(intervals = floatArrayOf(5f, 5f))
+                            ),
+                            vertical = Style(
+                                color = Color(0xffe5ebef),
+                                strokeStyle = PathEffect.dashPathEffect(intervals = floatArrayOf(5f, 5f))
                             )
                         ),
                         legendPos = LegendPosition.TOP_RIGHT

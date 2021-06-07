@@ -83,3 +83,15 @@ data class AxesStyle(
      */
     val yValueFontStyle: FontStyle = FontStyle()
 )
+
+data class GridsStyle(
+    /**
+     * Horizontal grid style.
+     */
+    val horizontal: Style = Style(),
+  
+    /**
+     * Vertical grid style.
+     */
+    val vertical: Style = Style()
+)

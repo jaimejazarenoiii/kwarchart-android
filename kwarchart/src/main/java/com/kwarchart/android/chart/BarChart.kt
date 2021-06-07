@@ -16,10 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.kwarchart.android.*
 import com.kwarchart.android.enum.BarChartType
 import com.kwarchart.android.enum.LegendPosition
-import com.kwarchart.android.model.AxesStyle
-import com.kwarchart.android.model.BarSeries
-import com.kwarchart.android.model.ChartData
-import com.kwarchart.android.model.Legend
+import com.kwarchart.android.model.*
 import com.kwarchart.android.util.ChartUtils
 
 /**
@@ -30,8 +27,7 @@ import com.kwarchart.android.util.ChartUtils
  * @param type Chart type for Bar.
  * @param title Chart title.
  * @param axesStyle X and Y axes style.
- * @param gridsColor Grids color.
- * @param showGrid Displayed state of grids.
+ * @param gridsStyle Grids style.
  * @param legendPos Legend position.
  */
 @Composable
@@ -41,8 +37,14 @@ fun <T> BarChart(
     type: BarChartType = BarChartType.VERTICAL,
     title: String? = null,
     axesStyle: AxesStyle = AxesStyle(),
-    gridsColor: Color = Color.Gray,
-    showGrid: Boolean = true,
+    gridsStyle: GridsStyle = GridsStyle(
+        horizontal = Style(
+            show = type == BarChartType.VERTICAL || type == BarChartType.VERTICAL_STACKED
+        ),
+        vertical = Style(
+            show = type == BarChartType.HORIZONTAL || type == BarChartType.HORIZONTAL_STACKED
+        )
+    ),
     legendPos: LegendPosition? = null
 ) {
     val keys = mutableListOf<T>()
@@ -95,19 +97,15 @@ fun <T> BarChart(
                 )
         ) {
             val axisEndPadding = ((data.size / 2) * data.first().width) + data.first().width
-            val isVBar = type == BarChartType.VERTICAL || type == BarChartType.VERTICAL_STACKED
-            val isHBar = type == BarChartType.HORIZONTAL || type == BarChartType.HORIZONTAL_STACKED
-            val xAxisEndPadding = if (isVBar) axisEndPadding else 0f
+            val xAxisEndPadding = if (type == BarChartType.VERTICAL || type == BarChartType.VERTICAL_STACKED)
+                axisEndPadding
+            else 0f
 
-            if (showGrid) {
-                drawGrids(
-                    maxLen,
-                    gridsColor,
-                    xAxisEndPadding = xAxisEndPadding,
-                    showHorizontalLines = isVBar,
-                    showVerticalLines = isHBar
-                )
-            }
+            drawGrids(
+                gridsStyle,
+                maxLen,
+                xAxisEndPadding = xAxisEndPadding
+            )
 
             drawData(data, type, maxLen, maxVal, xAxisEndPadding)
 
@@ -117,7 +115,7 @@ fun <T> BarChart(
                 maxVal,
                 maxLen,
                 xAxisEndPadding = xAxisEndPadding,
-                reverseKeyVal = isHBar
+                reverseKeyVal = type == BarChartType.HORIZONTAL || type == BarChartType.HORIZONTAL_STACKED
             )
         }
     }
