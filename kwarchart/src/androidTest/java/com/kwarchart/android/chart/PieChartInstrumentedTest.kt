@@ -31,11 +31,11 @@ class PieChartInstrumentedTest {
             mPieSeries.add(
                 PieSeries(
                     data = ChartData(initialLabels[i], fl),
-                    color = Color(
+                    colors = arrayListOf(Color(
                         Random.nextInt(255),
                         Random.nextInt(255),
                         Random.nextInt(255)
-                    ),
+                    )),
                     legend = Legend("${initialLabels[i]} ($fl)")
                 )
             )

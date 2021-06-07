@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -55,7 +56,7 @@ fun <T> PieChart(
             it.legend
         },
         legendColors = data.map {
-            it.color
+            it.colors.first()
         },
         legendPos = legendPos
     ) {
@@ -83,10 +84,17 @@ private fun <T> DrawScope.drawArcs(data: List<PieSeries<T>>) {
     for (i in data.indices) {
         val endAngle = mEndAngles[i]
 
+        val gradientColor = if (data[i].colors.size == 1)
+            arrayListOf(
+                data[i].colors.first(),
+                data[i].colors.first()
+            )
+        else data[i].colors.reversed()
+
         drawArc(
             startAngle = -startAngle,
             sweepAngle = -endAngle,
-            color = data[i].color,
+            brush = Brush.radialGradient(gradientColor),
             useCenter = true
         )
 
@@ -166,22 +174,22 @@ fun PieChartNormalPreview() {
         data = arrayListOf(
             PieSeries(
                 data = ChartData("Bills", 1050f),
-                color = Color.Red,
+                colors = arrayListOf(Color.Red),
                 legend = Legend("Bills")
             ),
             PieSeries(
                 data = ChartData("Shopping", 500f),
-                color = Color.Green,
+                colors = arrayListOf(Color.Green),
                 legend = Legend("Shopping")
             ),
             PieSeries(
                 data = ChartData("Food", 2050f),
-                color = Color.Blue,
+                colors = arrayListOf(Color.Blue),
                 legend = Legend("Food")
             ),
             PieSeries(
                 data = ChartData("Transportation", 800f),
-                color = Color.Yellow,
+                colors = arrayListOf(Color.Yellow),
                 legend = Legend("Transportation")
             ),
         ),
@@ -201,22 +209,22 @@ fun PieChartDoughnutPreview() {
         data = arrayListOf(
             PieSeries(
                 data = ChartData("Bills", 1050f),
-                color = Color.Red,
+                colors = arrayListOf(Color.Red),
                 legend = Legend("Bills")
             ),
             PieSeries(
                 data = ChartData("Shopping", 500f),
-                color = Color.Green,
+                colors = arrayListOf(Color.Green),
                 legend = Legend("Shopping")
             ),
             PieSeries(
                 data = ChartData("Food", 2050f),
-                color = Color.Blue,
+                colors = arrayListOf(Color.Blue),
                 legend = Legend("Food")
             ),
             PieSeries(
                 data = ChartData("Transportation", 800f),
-                color = Color.Yellow,
+                colors = arrayListOf(Color.Yellow),
                 legend = Legend("Transportation")
             ),
         ),

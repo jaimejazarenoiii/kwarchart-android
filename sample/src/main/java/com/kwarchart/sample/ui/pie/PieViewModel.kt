@@ -27,11 +27,11 @@ class PieViewModel : ViewModel() {
             initialPieSeries.add(
                 PieSeries(
                     data = ChartData(initialLabels[i], fl),
-                    color = Color(
+                    colors = arrayListOf(Color(
                         Random.nextInt(255),
                         Random.nextInt(255),
                         Random.nextInt(255)
-                    ),
+                    )),
                     legend = Legend("${initialLabels[i]} ($fl)")
                 )
             )
@@ -55,11 +55,11 @@ class PieViewModel : ViewModel() {
         _chartData.value!!.add(
             PieSeries(
                 data = ChartData(label, value),
-                color = Color(
+                colors = arrayListOf(Color(
                     Random.nextInt(255),
                     Random.nextInt(255),
                     Random.nextInt(255)
-                ),
+                )),
                 legend = Legend("$label ($value)")
             )
         )
