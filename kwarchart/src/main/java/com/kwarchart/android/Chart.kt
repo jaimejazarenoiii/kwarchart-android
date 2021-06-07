@@ -34,21 +34,21 @@ private const val WEIGHT_X_AXIS_NAME = 1f
 /**
  * Chart template.
  *
+ * @param legendColors Legend colors.
+ * @param legendPos Legend position.
  * @param modifier Modifier.
  * @param title Chart title.
  * @param axesStyle X and Y axes style.
  * @param legends Legends to be displayed in the chart.
- * @param legendColors Legend colors.
- * @param legendPos Legend position.
  * @param content Chart's children.
  */
 @Composable
 fun Chart(
+    legends: List<Legend>,
+    legendColors: List<Color>,
     modifier: Modifier = Modifier,
     title: String? = null,
     axesStyle: AxesStyle = AxesStyle(),
-    legends: List<Legend>? = null,
-    legendColors: List<Color>? = null,
     legendPos: LegendPosition? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -60,13 +60,13 @@ fun Chart(
             Text(it)
         }
 
-        if (legendPos != null) TopLegends(legends!!, legendColors!!, legendPos)
+        if (legendPos != null) TopLegends(legends, legendColors, legendPos)
 
         Row(
             modifier = Modifier.fillMaxWidth().weight(WEIGHT_CANVAS_AREA),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (legendPos != null) LeftLegends(legends!!, legendColors!!, legendPos)
+            if (legendPos != null) LeftLegends(legends, legendColors, legendPos)
 
             axesStyle.yName?.let {
                 Text(
@@ -90,10 +90,10 @@ fun Chart(
                 }
             }
 
-            if (legendPos != null) RightLegends(legends!!, legendColors!!, legendPos)
+            if (legendPos != null) RightLegends(legends, legendColors, legendPos)
         }
 
-        if (legendPos != null) BottomLegends(legends!!, legendColors!!, legendPos)
+        if (legendPos != null) BottomLegends(legends, legendColors, legendPos)
     }
 }
 
@@ -461,6 +461,8 @@ fun ChartPreview() {
         axesStyle = AxesStyle(
             xName = "X Axis",
             yName = "Y Axis"
-        )
+        ),
+        legends = arrayListOf(Legend("Sample Data")),
+        legendColors = arrayListOf(Color.Black)
     ) {}
 }
